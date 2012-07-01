@@ -1,0 +1,87 @@
+* SMS Examples
+
+** Shorthand
+s: stands for "scsms sends sms" [scsms stands for SMART Coops sms server]
+f: stands for "farmer sends sms"
+[some comment]: helpful comments to understand the dynamics
+"*": wild card meaning "user sends some content, or no content at all, which is not a command recognized scsms"
+
+** Firt time sign up, ask for name
+[SMART_Coops.number = +63 151 888 4444]
+
+f: "*" [farmer sends an SMS to +63 151 888 4444 with no intelligible content (for the first time)]
+s: "Hello, I notice that it is the first time you are using SMART Coops. Please reply to SMS with your family name and given name (ex: Capitan, Sergio)."
+f: "Gutierrez, Ramon"
+s: "Pleased to meet you Mr. Ramon Gutierrez. Did I get your name correctly? (you can reply yes or no). Note that SMS sent to SMART Coops are free of charge, so do not worry about your account balance."
+f: "yes"
+
+** First time sign up, ask for Coop name
+[Assuming it is the same number for all cooperatives in the Philipines]
+s: "Great, thank you for confirming your name. SMART Coop helps find out about prices for crop inputs, crop produce, loans, and more. I see that you are sending me messages from near San Pablo, Languna. Which cooperative are you a member of? Type the corresponding number. 1) San Benito Multi Purpose Cooperative, 2) San Pablo Cooperative, 3) Los Banos Cooperative, 4) Other, 5) I am not a member of a cooperative"
+f: "Other"
+s: "What region is your farm located in? 1) Lauzon, 2) Visayas, 3) Mindanao"
+f: "Lauzon"
+s: "What provide inside Lauzon? 1) Bicol, 2) Laguna, 3) ..."
+f: "2"
+s: "You are in Laguna. Which city/baranguay is closest to you? If you make a typo, do not worry we will try to find the correct one" [substring search with closest match list return]
+f: "Naga"
+s: "Dear Mr. Ramon Gutierrez, I now understand that you own a farm near Naga City in Bicol. Which cooperative are you member of? 1) XXX, 2) YYY, 3) ZZZ"
+
+** Ask for the crops
+[Assuming the system now knows the name of the farmer and the cooperative he/she is a member of]
+f: "*"
+s: "Welcome back to SMART Coops. What crops, produce are you currently growing? 1) Rice, 2) Mango, 3) Pineapple, 4) Banana, 5) Coconut, 6) Other (you can also just name them)"
+f: "Papayas, eggs, tilapia"
+s: "I see that you are growing papayas, eggs, and tilapia. How many hectares of papayas have you planted? (ex: 1.5 hectares)"
+f: "1.5"
+s: "You are growing 1.5 hectares of papayas. What is your daily production of eggs? (ex: 1000 eggs)"
+f: "papayas"
+s: "Would you like to update the number of hectares of papayas that you cultivate? If yes, just enter the number"
+f: "2.5"
+s: "You are growing 2.5 hectares of papayas. What is your daily production of eggs? (ex: 1000 eggs)"
+f: "Mangoes 1 hectare"
+s: "You are growing 2.5 hectares of papayas, 1 hectare of mangoes. What is your daily product of eggs?  (ex: 1000 eggs)"
+f: "1500"
+s: "You are growing 2.5 hectares of papayas, 1 hectare of mangoes, and have a daily production of 1000 eggs. How many kilos of fish do you produce per week (ex: 10 kilograms)"
+f: "20"
+s: "You are growing 2.5 hectares of papayas, 1 hectare of mangoes, and have a daily production of 1000 eggs, and 20 kilograms of tilapia. Do you grow any other product?"
+[User does not reply. The scsms will wait 24 hours and send the user a new question]
+
+** Farmer is registered to SMART Coop (Name, Coop, Crops)
+[Assuming the system now knows the name of the farmer and the cooperative, and the production of the farmer]
+f: "*"
+s: "Hello! How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Settings, 6) Send SMART Coops a message"
+f: "1"
+s: "Loan menu. You currently do not have a loan. Would you like to apply for a loan? (yes or no)"
+f: "Yes"
+s: "Your profile indicates that you are growing You are growing 2.5 hectares of papayas, 1 hectare of mangoes, and have a daily production of 1000 eggs, and 20 kilograms of tilapia. Do you grow any other product?"
+
+
+language computer shootout
+
+travis-ci.org
+sphinx.pocoo.org host on readthedocs.com
+philweavers
+github.com/edu
+bryanveloso
+
+Anne Michelle M. Santos
+Manager Developer Relations-Globelabs
+Strategic Partnerships & Innovation
+Consumer Business - Digital Media
+
++63 917 5881251
+amsantos@globetel.com.ph
+www.globelabs.com.ph
+2/F Globe Telecom Plaza 1
+Pioneer corner Madison Streets
+1552 Mandaluyong City, Philippines
+
+Frank Pohlmann
+Mobile +63 932 853 9919
+Mobile +63 918 951 8465
+frank@auberonsolutions.com
+
+
+Brian works at GitHub
+Malcolm
