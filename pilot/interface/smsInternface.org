@@ -47,14 +47,63 @@ f: "20"
 s: "You are growing 2.5 hectares of papayas, 1 hectare of mangoes, and have a daily production of 1000 eggs, and 20 kilograms of tilapia. Do you grow any other product?"
 [User does not reply. The scsms will wait 24 hours and send the user a new question]
 
-** Farmer is registered to SMART Coop (Name, Coop, Crops)
+** Farmer is registered to SMART Coop, applies for a loan (Name, Coop, Crops)
 [Assuming the system now knows the name of the farmer and the cooperative, and the production of the farmer]
 f: "*"
 s: "Hello! How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Settings, 6) Send SMART Coops a message"
 f: "1"
 s: "Loan menu. You currently do not have a loan. Would you like to apply for a loan? (yes or no)"
 f: "Yes"
-s: "Your profile indicates that you are growing You are growing 2.5 hectares of papayas, 1 hectare of mangoes, and have a daily production of 1000 eggs, and 20 kilograms of tilapia. Do you grow any other product?"
+s: "We need to determine your loan eligibility amount. Your profile indicates that you are growing 2.5 hectares of papayas, 1 hectare of mangoes, and have a daily production of 1000 eggs, and 20 kilograms of tilapia. Do you grow any other product? (Yes or No)?"
+f: "No"
+s: "Based on the size of your production, you are eligible for a loan of approximately PHP 34,000. The coop is offering this loan at a 16% interest rate, payable in kind. How much would you like to apply for?"
+f: "20,000"
+s: "20,000 is the amount I received. The {{loan officer name}} of the {{coop name}} will be notified of your application. To change your loan application value, please go back to the loan menu"
+
+** Farmer is registered to SMART Coop, receives a notification of loan approval (Name, Coop, Crops)
+[Assuming the system now knows the name of the farmer and the cooperative, and the production of the farmer]
+s: "Hello! SMART Coop would like to inform you that your 20,000 loan has been approved. The amount will be deposited in your bank account, and a P1500 will be available through your mobile money account starting next week. How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Settings, 6) Send SMART Coops a message"
+f: "1"
+s: "Loan menu. You have been approved for a P20,000 loan. You do not have any loan outstanding and no further action is available at this time. How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Settings, 6) Send SMART Coops a message"
+
+** Farmer is registered to SMART Coop, buys inputs (Name, Coop, Crops)
+[Assuming the system now knows the name of the farmer and the cooperative, and the production of the farmer]
+[scsmss will use the farmer profile to determine menu options]
+f: "*"
+s: "Hello! How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Update farm profile, 6) Send SMART Coops a message"
+f: "2"
+s: "Buy inputs menu. You currently have P19,000 in your electronic account. What category of product are you looking for? 1) General products, 2) Papayas inputs, 3) Mangoes inputs, 4) Eggs inputs, 5) Tilapia inputs, 6) Back to main menu"
+f: "1"
+s: "Buy inputs, general products menu. Current market price for gasolina is P45/litre and LPG P344/tank. Would you like to play an order for: 1) Gasolina, 2) LPG, 3) Back to inputs menu, 4) Back to main menu.
+f: "1"
+s: "Buy inputs, general products gasolina menu. How many litres of gasolina would you like to purchase? (ex: 34)"
+f: "10"
+s: "You are about to purchase 10 litres for a total of P450, which will be devited from your account which currently holds P19,000. Reply 'yes' to confirm or 'no' to cancel"
+f: "Yes"
+s: "Excellent. The purchase order has been sent to {{coop sales}}. Once the transaction is confirmed, your account will be debited by that amount. What category of product are you looking for? 1) General products, 2) Papayas inputs, 3) Mangoes inputs, 4) Eggs inputs, 5) Tilapia inputs, 6) Back to main menu"
+f: "2"
+s: "Buy inputs, papayas input. What inputs are you interested in? 1) Crop medicine, 2) Fertilizer, 3) Seeds"
+f: "1"
+s: "Buy inputs, papayas crop medicine menu. What crop medicine are you intersted in? 1) 2-4-D (weed killer), 2) Rogue (herbicide), 3) Puridan (insecticide), 4) Cynbus (insecticide), 5) Visokill (insecticide), 6) back to input menu, 7) Back to main menu"
+f: "7"
+s: "Hello! How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Update farm profile, 6) Send SMART Coops a message"
+f: "2"
+s: "Buy inputs menu. You currently have P19,000 in your electronic account. What category of product are you looking for? 1) General products, 2) Papayas inputs, 3) Mangoes inputs, 4) Eggs inputs, 5) Tilapia inputs, 6) Back to main menu"
+f: "3"
+s: "Buy inputs, mangoes inputs. What inputs are you interested in? 1) Crop medicine, 2) Fertilizer, 3) Seeds, 4) back to input menu, 5) Back to main menu"
+f: "2"
+s: "Buy inputs, mangoes fertilizer menu. What are you intersted in? 1) Organic fertilizer, 2) Triple 14 (fertilizer), 3) back to input menu, 5) Back to main menu"
+
+** Farmer is registered to SMART Coop, buys inputs (Name, Coop, Crops)
+[Assuming the system now knows the name of the farmer and the cooperative, and the production of the farmer]
+[scsmss will use the farmer profile to determine menu options]
+f: "*"
+s: "Hello! How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Update farm profile, 6) Send SMART Coops a message"
+f: "3"
+s: "Your profile indicates that you are growing 2.5 hectares of papayas, 1 hectare of mangoes, and have a daily production of 1000 eggs, and 20 kilograms of tilapia. What produce are you interested in selling? 1) papayas, 2) mangoes, 3) eggs, 4) tilapia"
+[not finished]
+
+
 
 
 language computer shootout
@@ -64,24 +113,3 @@ sphinx.pocoo.org host on readthedocs.com
 philweavers
 github.com/edu
 bryanveloso
-
-Anne Michelle M. Santos
-Manager Developer Relations-Globelabs
-Strategic Partnerships & Innovation
-Consumer Business - Digital Media
-
-+63 917 5881251
-amsantos@globetel.com.ph
-www.globelabs.com.ph
-2/F Globe Telecom Plaza 1
-Pioneer corner Madison Streets
-1552 Mandaluyong City, Philippines
-
-Frank Pohlmann
-Mobile +63 932 853 9919
-Mobile +63 918 951 8465
-frank@auberonsolutions.com
-
-
-Brian works at GitHub
-Malcolm
