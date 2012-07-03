@@ -110,7 +110,7 @@ def getCoop(loc):
     coops = getNearbyCoops(loc)
     coopsStr = ''
     for i in range(1,len(coops)+1):
-        coopsStr = coopsStr + str(i) + ") "
+        coopsStr = coops[i-1] + str(i) + ") "
     otherOptionsStr = str(i+1) + ") Other, " + str(i+2) + ") I am not a member of a cooperative"
     smsPrint(scn, "I see that you are sending me messages from near "+loc.getName()+". Which cooperative are you a member of? Type the corresponding number: " + coopsStr + otherOptionsStr) 
     s = getSMS()
@@ -129,7 +129,6 @@ f = Farmer()
 firstTime()
 f.setName(getName())
 smsPrint(scn, "Great, thank you for confirming your name, "+f.getName()+". SMART Coop helps you find out about prices for crop inputs, crop produce, loans, and more.")
-
 
 loc = Location("San Pablo, Languna")
 f.setCoop(getCoop(loc))

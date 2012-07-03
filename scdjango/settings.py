@@ -1,5 +1,7 @@
 # Django settings for scdjango project.
 
+import dj_databse_url
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -8,6 +10,8 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
+
+DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
 
 DATABASES = {
     'default': {
