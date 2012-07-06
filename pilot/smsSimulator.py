@@ -1,10 +1,12 @@
-import re, csv, time
+import re, csv, time, random
 from datetime import datetime
 
 
 provinces = ['Abra','Agusan del Norte','Agusan del Sur','Aklan','Albay','Antique','Apayao','Aurora','Basilan','Bataan','Batanes','Batangas','Benguet','Biliran','Bohol','Bukidnon','Bulacan','Cagayan','Camarines Norte','Camarines Sur','Camiguin','Capiz','Catanduanes','Cavite','Cebu','Compostela Valley','Cotabato','Davao del Norte','Davao del Sur','Davao Oriental','Dinagat Islands','Eastern Samar','Guimaras','Ifugao','Ilocos Norte','Ilocos Sur','Iloilo','Isabela','Kalinga','La Union','Laguna','Lanao del Norte','Lanao del Sur','Leyte','Maguindanao','Marinduque','Masbate','Misamis Occidental','Misamis Oriental','Mountain Province','Negros Occidental','Negros Oriental','Northern Samar','Nueva Ecija','Nueva Vizcaya','Occidental Mindoro','Oriental Mindoro','Palawan','Pampanga','Pangasinan','Quezon','Quirino','Rizal','Romblon','Samar','Sarangani','Siquijor','Sorsogon','South Cotabato','Southern Leyte','Sultan Kudarat','Sulu','Surigao del Norte','Surigao del Sur','Tarlac','Tawi-Tawi','Zambales','Zamboanga del Norte','Zamboanga del Sur','Zamboanga Sibugay','Metro Manila']
 
-locations = {'Abra': ['Blah','Bleh']}
+locations = {'Abra': ['Bangued','Boliney','Bucay','Bucloc','Daguioman','Danglas','Dolores','La Paz','Lacub','Lagangilang','Lagayan','Langiden','Licuan-Baay','Luba','Malibcong','Manabo','Penarrubia','Pidigan','Pilar','Sallapadan','SanIsidro','SanJuan','SanQuintin','Tayum','Tineg','Tubo','Villaviciosa'], 'Agusan del Norte':['Butuan City','Cabadbaran City','Buenavista','Carmen','Jabonga','Kitcharao','Las Nieves','Magallanes','Nasipit','Remedios T. Romualdez','Santiago','Tubay']} #http://en.wikipedia.org/wiki/List_of_cities_and_municipalities_in_the_Philippines using 
+
+coops = {'Bangued':['Some coop', 'Another coop', 'Yet another coop']}
 
 class Farmer():
     """Farmers have a name, a mobile phone number, and possibly belong to a coop"""
@@ -80,7 +82,7 @@ def smsPrint(sendingNum, body):
     print smsBorder
     print wrap_onspace(body, width)
     print smsSeparator
-    time.sleep(.5)
+    time.sleep(sleepTime)
 
 def firstTime():
     """Informs the farmer of what SMART Coop is, and of the cost"""
@@ -93,21 +95,19 @@ def getSMS():
     print '\n'
     prompt = 'Send a new SMS to ' + scn + ' (SMART Coops) :\nMessage Content > '
     newSMS = raw_input(prompt)
-    print '\n                          Sending message',
-    for i in range(1,8):
-        print '.',
-        time.sleep(.25)
+    print '\n                          Sending message\n\n\n\n\n',
+    time.sleep(sleepTime)
     print '\n\n\n\n\n'
     return newSMS
 
 def getName():
     """Retrieves and confirms the name of the farmer"""
-    s = ''
-    while s.lower() != 'yes':
+    confirmation = ''
+    while confirmation.lower() != 'yes':
         smsPrint(scn, "Please reply to this SMS with your name (ex: Capitan, Sergio).")
         name = getSMS()
         smsPrint(scn, "Pleased to meet you "+name+". Did I get your name correctly? (Reply yes or no). ")
-        s = getSMS()
+        confirmation = getSMS()
     smsPrint(scn, "Great, thank you for confirming your name, "+name+". SMART Coop helps you find out about prices for crop inputs, crop produce, loans, and more.")
     return name
 
@@ -121,70 +121,85 @@ def getNearbyCoops(loc):
 
 def searchList(myStr, myList):
     """Returns the set of strings resulting from a substring search"""
-    pattern = re.compile(r'.*'+myStr+'.*')
+    pattern = re.compile(r'.*'+myStr+'.*', re.IGNORECASE)
     results = []
-    for l in myList
+    for l in myList:
         r = re.search(pattern,l)
         if r is not None:
-            results.append(r)
+            results.append(r.group())
     return results
 
 def makeListStr(myList):
     myStr = ''
     for i in range(1,len(myList)+1):
-        myStr = myStr + ' ' + str(i) + ")" + myList[i-1] + ','
+        myStr = myStr + ' ' + str(i) + ") " + myList[i-1] + ','
     return myStr
 
 def getProvince():
-    ans = ''
+    """getLoc and getProvince could be refactored into one"""
+
+    confirmation = 'no'
     likelyProvinces = []
-    while ans != 'yes':
+    while confirmation.lower() != 'yes':
         reply = 'What province is your farm located in (e.g. '
-        smsPrint(scn, reply + random.choice(provinces) + ', please try to spell the name as completely as possible)?')
-        likelyProvinces = searchProvinces(getSMS())
-        ans = ''
+        smsPrint(scn, reply + random.choice(provinces) + ')? Please try to spell the name as completely as possible.')
+        likelyProvinces = searchList(getSMS(),provinces)
         if len(likelyProvinces) == 1:
-            smsPrint(scn, "Is your farm located in "+likelyProvince[0]+"? (yes or no)")
-            ans = getSMS()
+            smsPrint(scn, "Is your farm located in "+likelyProvinces[0]+"? (yes or no)")
+            confirmation = getSMS()
+        elif len(likelyProvinces) == 0:
+            smsPrint(scn, "Please be more specific, no province matches your spelling.")
         else:
-            smsPrint(scn, "Unfortunately the following provinces match your spelling: " + makeListStr(likelyProvinces))
+            smsPrint(scn, "Please be more specific, many provinces match your spelling: " + makeListStr(likelyProvinces))
     return likelyProvinces[0]
 
 def getLoc(province):
-    ans = ''
-    likelyProvinces = []
-    while ans != 'yes':
-        reply =  'What city or baranguay is your farm located nearest to (e.g. '
-        smsPrint(scn, reply + random.choice(locations) + ', please try to spell the name as completely as possible)?')
-        likelyProvinces = searchProvinces(getSMS())
-        ans = ''
-        if len(likelyProvinces) == 1:
-            smsPrint(scn, "Is your farm located in "+likelyProvince[0]+"? (yes or no)")
-            ans = getSMS()
+    """getLoc and getProvince could be refactored into one"""
+
+    confirmation = 'no'
+    likelyLoc = []
+    while confirmation.lower() != 'yes':
+        reply =  'Your farm is in '+province+' province. What city or baranguay is it located nearest to (e.g. '
+        smsPrint(scn, reply + random.choice(locations['Abra']) + ')? Please try to spell the name as completely as possible.')
+        likelyLoc = searchList(getSMS(),locations['Abra'])
+        if len(likelyLoc) == 1:
+            smsPrint(scn, "Is your farm located in "+likelyLoc[0]+"? (yes or no)")
+            confirmation = getSMS()
+        elif len(likelyLoc) == 0:
+            smsPrint(scn, "Please be more specific, no location matches your spelling.")
         else:
-            smsPrint(scn, "Unfortunately the following provinces match your spelling: " + makeListStr(likelyProvinces))
-    return likelyProvinces[0]
-
-
-
-    
+            smsPrint(scn, "Please be more specific, many locations match your spelling: " + makeListStr(likelyLoc))
+    return likelyLoc[0]
 
 def getCoop(loc):
     coops = getNearbyCoops(loc)
     optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
-    s = ''
-    smsPrint(scn, "I see that you are sending messages from near "+loc.getName()+". Which cooperative are you a member of?" + optionsStr)
-    while s.lower != 'yes':
+    confirmation = ''
+    smsPrint(scn, "I see that you are sending messages from near "+loc.getName()+". Which cooperative are you a member of?"+optionsStr)
+    while confirmation.lower() != 'yes':
         ans = getSMS()
-        if ans in range(1,len(coops)+1):
-            smsPrint(scn, "You are a member of "+coops[coopId]+", is this correct? (yes or no)")
-            s = getSMS()
-        elif ans == len(coops):
-            loc.setName() = getLoc(getProvince)
-    
-   
+        try:
+            i = int(ans)
+            if i in range(1,len(coops)+1):
+                smsPrint(scn, "You are a member of "+coops[i-1]+", is this correct? (yes or no)")
+                confirmation = getSMS()
+            elif i == len(coops)+1:
+                loc.setName(getLoc(getProvince()))
+                coops = getNearbyCoops(loc)
+                optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
+                smsPrint(scn, "I see that you are sending messages from near "+loc.getName()+". Which cooperative are you a member of?" + optionsStr)
+            elif i == len(coops)+2:
+                return None
+        except ValueError:
+            smsPrint(scn, "Please reply with a numeric value. Which cooperative are you a member of?" + optionsStr)
+    return coops[i-1]
 
-scn = "+63 151 888 4444" #Smart Coops number
+def offerMenu():
+    optionsStr = makeListStr(['Rice','Mango','Pineapple','Banana','Coconut','Other (you can also just name them)'])
+    smsPrint(scn, "Welcome back to SMART Coops. What crops, produce are you currently growing?"+optionsStr)
+
+scn = "+63 915 866 8018" #Smart Coops number
+sleepTime = .1
 getSMS()
 
 f = Farmer()
@@ -192,3 +207,4 @@ firstTime()
 f.setName(getName())
 loc = Location(getGPSCoord())
 f.setCoop(getCoop(loc))
+offerMenu()
