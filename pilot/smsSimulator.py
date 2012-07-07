@@ -1,14 +1,11 @@
 import re, csv, time, random, getopt, sys
 from datetime import datetime
+import philippinesData
 
-
-provinces = ['Abra','Agusan del Norte','Agusan del Sur','Aklan','Albay','Antique','Apayao','Aurora','Basilan','Bataan','Batanes','Batangas','Benguet','Biliran','Bohol','Bukidnon','Bulacan','Cagayan','Camarines Norte','Camarines Sur','Camiguin','Capiz','Catanduanes','Cavite','Cebu','Compostela Valley','Cotabato','Davao del Norte','Davao del Sur','Davao Oriental','Dinagat Islands','Eastern Samar','Guimaras','Ifugao','Ilocos Norte','Ilocos Sur','Iloilo','Isabela','Kalinga','La Union','Laguna','Lanao del Norte','Lanao del Sur','Leyte','Maguindanao','Marinduque','Masbate','Misamis Occidental','Misamis Oriental','Mountain Province','Negros Occidental','Negros Oriental','Northern Samar','Nueva Ecija','Nueva Vizcaya','Occidental Mindoro','Oriental Mindoro','Palawan','Pampanga','Pangasinan','Quezon','Quirino','Rizal','Romblon','Samar','Sarangani','Siquijor','Sorsogon','South Cotabato','Southern Leyte','Sultan Kudarat','Sulu','Surigao del Norte','Surigao del Sur','Tarlac','Tawi-Tawi','Zambales','Zamboanga del Norte','Zamboanga del Sur','Zamboanga Sibugay','Metro Manila']
-
-locations = {'Abra': ['Bangued','Boliney','Bucay','Bucloc','Daguioman','Danglas','Dolores','La Paz','Lacub','Lagangilang','Lagayan','Langiden','Licuan-Baay','Luba','Malibcong','Manabo','Penarrubia','Pidigan','Pilar','Sallapadan','SanIsidro','SanJuan','SanQuintin','Tayum','Tineg','Tubo','Villaviciosa'], 'Agusan del Norte':['Butuan City','Cabadbaran City','Buenavista','Carmen','Jabonga','Kitcharao','Las Nieves','Magallanes','Nasipit','Remedios T. Romualdez','Santiago','Tubay']} #http://en.wikipedia.org/wiki/List_of_cities_and_municipalities_in_the_Philippines using 
-
-coops = {'Bangued':['Some coop', 'Another coop', 'Yet another coop']}
-
-crops = ['Agave Fibres Nes','Almonds, with shell','Anise, badian, fennel, corian.','Apples','Apricots','Arecanuts','Artichokes','Asparagus','Avocados','Bambara beans','Bananas','Barley','Beans, dry','Beans, green','Berries Nes','Blueberries','Brazil nuts, with shell','Broad beans, horse beans, dry','Buckwheat','Cabbages and other brassicas','Canary seed','Carobs','Carrots and turnips','Cashew nuts, with shell','Cashewapple','Cassava','Castor oil seed','Cauliflowers and broccoli','Cereals, nes','Cherries','Chestnuts','Chick peas','Chicory roots','Chillies and peppers, dry','Chillies and peppers, green','Cinnamon (canella)','Citrus fruit, nes','Cloves','Cocoa beans','Coconuts','Coffee, green','Coir','Cow peas, dry','Cranberries','Cucumbers and gherkins','Currants','Dates','Eggplants (aubergines)','Fibre Crops Nes','Figs','Flax fibre and tow','Fonio','forage Products','Fruit Fresh Nes','Fruit, tropical fresh nes','Garlic','Ginger','Gooseberries','Grapefruit (inc. pomelos)','Grapes','Groundnuts, with shell','Hazelnuts, with shell','Hemp Tow Waste','Hempseed','Hops','Jute','Karite Nuts (Sheanuts)','Kiwi fruit','Kolanuts','Leeks, other alliaceous veg','Leguminous vegetables, nes','Lemons and limes','Lentils','Lettuce and chicory','Linseed','Lupins','Maize','Maize, green','Mangoes, mangosteens, guavas','Manila Fibre (Abaca)','Maté','Melonseed','Millet','Mixed grain','Mushrooms and truffles','Mustard seed','Natural rubber','Nutmeg, mace and cardamoms','Nuts, nes','Oats','Oil palm fruit','Oilseeds, Nes','Okra','Olives','Onions (inc. shallots), green','Onions, dry','Oranges','Other Bastfibres','Other melons (inc.cantaloupes)','Papayas','Peaches and nectarines','Pears','Peas, dry','Peas, green','Pepper (Piper spp.)','Peppermint','Persimmons','Pigeon peas','Pineapples','Pistachios','Plantains','Plums and sloes','Popcorn','Poppy seed','Potatoes','Pulses, nes','Pumpkins, squash and gourds','Pyrethrum,Dried','Quinces','Quinoa','Ramie','Rapeseed','Raspberries','Rice, paddy','Roots and Tubers, nes','Rye','Safflower seed','Seed cotton','Sesame seed','Sisal','Sorghum','Sour cherries','Soybeans','Spices, nes','Spinach','Stone fruit, nes','Strawberries','String beans','Sugar beet','Sugar cane','Sugar crops, nes','Sunflower seed','Sweet potatoes','Tangerines, mandarins, clem.','Taro (cocoyam)','Tea','Tobacco, unmanufactured','Tomatoes','Triticale','Tung Nuts','Vanilla','Vegetables fresh nes','Vetches','Walnuts, with shell','Watermelons','Wheat','Yams','Yautia (cocoyam)']
+provinces = philippinesData.provinces
+citiesOrMunici = philippinesData.citiesOrMunici
+coops = philippinesData.coops
+crops = philippinesData.crops
 
 
 class Farmer():
@@ -139,7 +136,7 @@ def makeListStr(myList):
     return myStr
 
 def getProvince():
-    """getLoc and getProvince could be refactored into one"""
+    """getCityOrMunici and getProvince could be refactored into one"""
 
     confirmation = 'no'
     likelyProvinces = []
@@ -156,23 +153,23 @@ def getProvince():
             smsPrint(scn, "Please be more specific, many provinces match your spelling: " + makeListStr(likelyProvinces))
     return likelyProvinces[0]
 
-def getLoc(province):
-    """getLoc and getProvince could be refactored into one"""
+def getCityOrMunici(province):
+    """getCityOrMunici and getProvince could be refactored into one"""
 
     confirmation = 'no'
-    likelyLoc = []
+    likelyCityOrMunici = []
     while confirmation.lower() != 'yes':
-        reply =  'Your farm is in '+province+' province. What city or baranguay is it located nearest to (e.g. '
-        smsPrint(scn, reply + random.choice(locations['Abra']) + ')? Please try to spell the name as completely as possible.')
-        likelyLoc = searchList(getSMS(),locations['Abra'])
-        if len(likelyLoc) == 1:
-            smsPrint(scn, "Is your farm located in "+likelyLoc[0]+"? (yes or no)")
+        reply =  'Your farm is in '+province+' province. What city or municipality is it located nearest to (e.g. '
+        smsPrint(scn, reply + random.choice(cityOrMunici[province]) + ')? Please try to spell the name as completely as possible.')
+        likelyCityOrMunici = searchList(getSMS(),cityOrMunici['Abra'])
+        if len(likelyCityOrMunici) == 1:
+            smsPrint(scn, "Is your farm located in "+likelyCityOrMunici[0]+"? (yes or no)")
             confirmation = getSMS()
-        elif len(likelyLoc) == 0:
-            smsPrint(scn, "Please be more specific, no location matches your spelling.")
+        elif len(likelyCityOrMunici) == 0:
+            smsPrint(scn, "Please be more specific, no city or municipality matches your spelling.")
         else:
-            smsPrint(scn, "Please be more specific, many locations match your spelling: " + makeListStr(likelyLoc))
-    return likelyLoc[0]
+            smsPrint(scn, "Please be more specific, many cities or manucipalities match your spelling: " + makeListStr(likelyCityOrMunici))
+    return likelyCityOrMunici[0]
 
 def getCoop(loc):
     coops = getNearbyCoops(loc)
@@ -187,7 +184,7 @@ def getCoop(loc):
                 smsPrint(scn, "You are a member of "+coops[i-1]+", is this correct? (yes or no)")
                 confirmation = getSMS()
             elif i == len(coops)+1:
-                loc.setName(getLoc(getProvince()))
+                loc.setName(getCityOrMunici(getProvince()))
                 coops = getNearbyCoops(loc)
                 optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
                 smsPrint(scn, "I see that you are sending messages from near "+loc.getName()+". Which cooperative are you a member of?" + optionsStr)
@@ -198,7 +195,7 @@ def getCoop(loc):
     return coops[i-1]
 
 def getCrop():
-    """getLoc and getProvince could be refactored into getLoc and getProvince"""
+    """getCityOrMunici and getProvince could be refactored into getCityOrMunici and getProvince"""
 
     confirmation = 'no'
     likelyCrop = []
