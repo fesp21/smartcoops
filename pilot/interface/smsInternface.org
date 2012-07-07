@@ -50,7 +50,7 @@ s: "You are growing 2.5 hectares of papayas, 1 hectare of mangoes, and have a da
 ** Farmer is registered to SMART Coop, applies for a loan (Name, Coop, Crops)
 [Assuming the system now knows the name of the farmer and the cooperative, and the production of the farmer]
 f: "*"
-s: "Hello! How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Settings, 6) Send SMART Coops a message"
+s: "Hello! How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) View my profile, 6) Send SMART Coops a message"
 f: "1"
 s: "Loan menu. You currently do not have a loan. Would you like to apply for a loan? (yes or no)"
 f: "Yes"

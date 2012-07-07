@@ -74,7 +74,7 @@ def wrap_onspace(text, width):
 
 def smsPrint(sendingNum, body):
     """Prints a pretty sms msg on the terminal"""
-    smsSeparator = "==================================================================="
+    smsSeparator = "=================================================================="
     width = len(smsSeparator)
     smsBorder = '-'*width
     print '\n\n'+smsSeparator
@@ -84,11 +84,6 @@ def smsPrint(sendingNum, body):
     print smsSeparator
     time.sleep(sleepTime)
 
-def firstTime():
-    """Informs the farmer of what SMART Coop is, and of the cost"""
-    s = "Hello, it is the first time you are using SMART Coops. "
-    s = s + "Note that SMS sent to and received from SMART Coops are free of charge, so do not worry about your load balance."
-    smsPrint(scn, s)
 
 def getSMS():
     """Simulates the user sending an SMS to SMART Coops"""
@@ -100,10 +95,14 @@ def getSMS():
     print '\n\n\n\n\n'
     return newSMS
 
+def notDone(ans):
+    affirmativeAns = ['yes','y','ye','ya','oo',1]
+    return all([ans.lower() != x for x in affirmativeAns])
+
 def getName():
     """Retrieves and confirms the name of the farmer"""
     confirmation = ''
-    while confirmation.lower() != 'yes':
+    while notDone(confirmation):
         smsPrint(scn, "Please reply to this SMS with your name (ex: Capitan, Sergio).")
         name = getSMS()
         smsPrint(scn, "Pleased to meet you "+name+". Did I get your name correctly? (Reply yes or no). ")
@@ -133,14 +132,14 @@ def makeListStr(myList):
     myStr = ''
     for i in range(1,len(myList)+1):
         myStr = myStr + ' ' + str(i) + ") " + myList[i-1] + ','
-    return myStr
+    return myStr[:-1]
 
 def getProvince():
     """getCityOrMunici and getProvince could be refactored into one"""
 
     confirmation = 'no'
     likelyProvinces = []
-    while confirmation.lower() != 'yes':
+    while notDone(confirmation):
         reply = 'What province is your farm located in (e.g. '
         smsPrint(scn, reply + random.choice(provinces) + ')? Please try to spell the name as completely as possible.')
         likelyProvinces = searchList(getSMS(),provinces)
@@ -157,26 +156,26 @@ def getCityOrMunici(province):
     """getCityOrMunici and getProvince could be refactored into one"""
 
     confirmation = 'no'
-    likelyCityOrMunici = []
-    while confirmation.lower() != 'yes':
+    likelyCitiesOrMunici = []
+    while notDone(confirmation):
         reply =  'Your farm is in '+province+' province. What city or municipality is it located nearest to (e.g. '
-        smsPrint(scn, reply + random.choice(cityOrMunici[province]) + ')? Please try to spell the name as completely as possible.')
-        likelyCityOrMunici = searchList(getSMS(),cityOrMunici['Abra'])
-        if len(likelyCityOrMunici) == 1:
-            smsPrint(scn, "Is your farm located in "+likelyCityOrMunici[0]+"? (yes or no)")
+        smsPrint(scn, reply + random.choice(citiesOrMunici[province]) + ')? Please try to spell the name as completely as possible.')
+        likelyCitiesOrMunici = searchList(getSMS(),citiesOrMunici[province])
+        if len(likelyCitiesOrMunici) == 1:
+            smsPrint(scn, "Is your farm located in "+likelyCitiesOrMunici[0]+"? (yes or no)")
             confirmation = getSMS()
-        elif len(likelyCityOrMunici) == 0:
+        elif len(likelyCitiesOrMunici) == 0:
             smsPrint(scn, "Please be more specific, no city or municipality matches your spelling.")
         else:
-            smsPrint(scn, "Please be more specific, many cities or manucipalities match your spelling: " + makeListStr(likelyCityOrMunici))
-    return likelyCityOrMunici[0]
+            smsPrint(scn, "Please be more specific, many cities or manucipalities match your spelling: " + makeListStr(likelyCitiesOrMunici))
+    return likelyCitiesOrMunici[0]
 
 def getCoop(loc):
     coops = getNearbyCoops(loc)
     optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
     confirmation = ''
     smsPrint(scn, "I see that you are sending messages from near "+loc.getName()+". Which cooperative are you a member of?"+optionsStr)
-    while confirmation.lower() != 'yes':
+    while notDone(confirmation):
         ans = getSMS()
         try:
             i = int(ans)
@@ -184,7 +183,9 @@ def getCoop(loc):
                 smsPrint(scn, "You are a member of "+coops[i-1]+", is this correct? (yes or no)")
                 confirmation = getSMS()
             elif i == len(coops)+1:
-                loc.setName(getCityOrMunici(getProvince()))
+                province = getProvince()
+                city = getCityOrMunici(province)
+                loc.setName(city + ',' + province)
                 coops = getNearbyCoops(loc)
                 optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
                 smsPrint(scn, "I see that you are sending messages from near "+loc.getName()+". Which cooperative are you a member of?" + optionsStr)
@@ -194,13 +195,13 @@ def getCoop(loc):
             smsPrint(scn, "Please reply with a numeric value. Which cooperative are you a member of?" + optionsStr)
     return coops[i-1]
 
-def getCrop():
+def getCropName():
     """getCityOrMunici and getProvince could be refactored into getCityOrMunici and getProvince"""
 
     confirmation = 'no'
     likelyCrop = []
-    while confirmation.lower() != 'yes':
-        reply =  'What crop are you cultivating (e.g. '
+    while notDone(confirmation):
+        reply =  'What other crop are you cultivating (e.g. '
         smsPrint(scn, reply + random.choice(crops) + ')? Please try to spell the name as completely as possible.')
         likelyCrop = searchList(getSMS(),crops)
         if len(likelyCrop) == 1:
@@ -212,15 +213,94 @@ def getCrop():
             smsPrint(scn, "Please be more specific, many crops match your spelling: " + makeListStr(likelyCrop))
     return likelyCrop[0]
 
-def offerMenu():
-    optionsStr = makeListStr(['Rice','Mango','Pineapple','Banana','Coconut','Other (you can also just name them)'])
-    smsPrint(scn, "What crops, produce are you currently growing?"+optionsStr)
-    ans = getSMS()
-    
+def getCropSize(crop):
+    """Prompts user for the size of the crop farming"""
 
+    confirmation = 'no'
+    reply = 'You are cultivating '+crop+', please try to estimate the number of hectares on which you are cultivating '+crop
+    while notDone(confirmation):
+        smsPrint(scn, reply)
+        ans = getSMS()
+        try:
+            i = int(ans)
+            smsPrint(scn, "You are cultivating "+ans+" hectares of "+crop+", is this correct? (yes or no)")
+            confirmation = getSMS()
+        except ValueError:
+            smsPrint(scn, "Please reply with a numeric value."+reply)
+    return ans
+
+def getCrops():
+    """Prompts farmer for all of the crops being cultivated"""
+    
+    confirmation = 'no'
+    crops = []
+    cropsSizes = {}
+    while notDone(confirmation):
+        crops.append(getCropName())
+        cropsSizes[crops[-1]] = getCropSize(crops[-1])
+        cultivationList = []
+        for c in crops:
+            cultivationList.append(cropsSizes[c] + " hectares of " + c)
+        smsPrint(scn, "You are cultivating" + makeListStr(cultivationList) + ". Are you cultivating anything else? (yes or no)")
+        ans = getSMS()
+        if any([ans == x for x in ['yes','y','ye','ya','oo',1]]):
+            confirmation = 'no'
+        else:
+            confirmation = 'yes'
+    return {'crops':crops,'sizes':cropsSizes}
+
+def firstTime():
+    """Informs the farmer of what SMART Coop is, and of the cost"""
+    s = "Hello, it is the first time you are using SMART Coops. "
+    s = s + "Note that SMS sent to and received from SMART Coops are free of charge, so do not worry about your load balance."
+    smsPrint(scn, s)
+    f = Farmer()
+    f.setName(getName())
+    loc = Location(getGPSCoord())
+    f.setCoop(getCoop(loc))
+    f.setCrops(getCrops())
+    return f
+
+def loansMenu(farmer):
+    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
+    confirmation = 'no'
+    while notDone(confirmation):
+        smsPrint(scn, "SMART Coops loans menu. What would you like to do: "+optionsStr)
+        ans = getSMS()
+        try:
+            {1:loansMenu,2:inputsMenu,3:harvestMenu,4:adviceMenu,5:farmerProfileMenu,6:contactSCMenu}[int(ans)](farmer)
+        except ValueError:
+            smsPrint(scn, "Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
+def inputsMenu(farmer):
+    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
+    smsPrint(scn, "This menu is not complete yet... Returning to main menu")
+def harvestMenu(farmer):
+    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
+    smsPrint(scn, "This menu is not complete yet... Returning to main menu")
+def adviceMenu(farmer):
+    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
+    smsPrint(scn, "This menu is not complete yet... Returning to main menu")
+def farmerProfileMenu(farmer):
+    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
+    smsPrint(scn, "This menu is not complete yet... Returning to main menu")
+def contactSCMenu(farmer):
+    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
+    smsPrint(scn, "This menu is not complete yet... Returning to main menu")
+
+def mainMenu(farmer):
+    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
+    while True:
+        smsPrint(scn, "SMART Coops main menu. What would you like to do: "+optionsStr)
+        ans = getSMS()
+        try:
+            {1:loansMenu,2:inputsMenu,3:harvestMenu,4:adviceMenu,5:farmerProfileMenu,6:contactSCMenu}[int(ans)](farmer)
+        except ValueError:
+            smsPrint(scn, "Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
+    
 #Global variables
 scn = "+63 915 866 8018" #Smart Coops number
 sleepTime = .1 #to simulate time in between SMS messages, 1.5 secs more realistic
+
 
 class Usage(Exception):
     def __init__(self, msg):
@@ -236,13 +316,7 @@ def main(argv=None):
             opts, args = getopt.getopt(argv[1:], "h", ["help"])
         except getopt.error, msg:
              raise Usage(msg)
-        getSMS()
-        f = Farmer()
-        firstTime()
-        f.setName(getName())
-        loc = Location(getGPSCoord())
-        f.setCoop(getCoop(loc))
-        offerMenu()
+        mainMenu(firstTime())
         
     except Usage, err:
         print >>sys.stderr, err.msg
