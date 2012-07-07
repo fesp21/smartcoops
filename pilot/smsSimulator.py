@@ -1,4 +1,4 @@
-import re, csv, time, random
+import re, csv, time, random, getopt, sys
 from datetime import datetime
 
 
@@ -7,6 +7,9 @@ provinces = ['Abra','Agusan del Norte','Agusan del Sur','Aklan','Albay','Antique
 locations = {'Abra': ['Bangued','Boliney','Bucay','Bucloc','Daguioman','Danglas','Dolores','La Paz','Lacub','Lagangilang','Lagayan','Langiden','Licuan-Baay','Luba','Malibcong','Manabo','Penarrubia','Pidigan','Pilar','Sallapadan','SanIsidro','SanJuan','SanQuintin','Tayum','Tineg','Tubo','Villaviciosa'], 'Agusan del Norte':['Butuan City','Cabadbaran City','Buenavista','Carmen','Jabonga','Kitcharao','Las Nieves','Magallanes','Nasipit','Remedios T. Romualdez','Santiago','Tubay']} #http://en.wikipedia.org/wiki/List_of_cities_and_municipalities_in_the_Philippines using 
 
 coops = {'Bangued':['Some coop', 'Another coop', 'Yet another coop']}
+
+crops = ['Agave Fibres Nes','Almonds, with shell','Anise, badian, fennel, corian.','Apples','Apricots','Arecanuts','Artichokes','Asparagus','Avocados','Bambara beans','Bananas','Barley','Beans, dry','Beans, green','Berries Nes','Blueberries','Brazil nuts, with shell','Broad beans, horse beans, dry','Buckwheat','Cabbages and other brassicas','Canary seed','Carobs','Carrots and turnips','Cashew nuts, with shell','Cashewapple','Cassava','Castor oil seed','Cauliflowers and broccoli','Cereals, nes','Cherries','Chestnuts','Chick peas','Chicory roots','Chillies and peppers, dry','Chillies and peppers, green','Cinnamon (canella)','Citrus fruit, nes','Cloves','Cocoa beans','Coconuts','Coffee, green','Coir','Cow peas, dry','Cranberries','Cucumbers and gherkins','Currants','Dates','Eggplants (aubergines)','Fibre Crops Nes','Figs','Flax fibre and tow','Fonio','forage Products','Fruit Fresh Nes','Fruit, tropical fresh nes','Garlic','Ginger','Gooseberries','Grapefruit (inc. pomelos)','Grapes','Groundnuts, with shell','Hazelnuts, with shell','Hemp Tow Waste','Hempseed','Hops','Jute','Karite Nuts (Sheanuts)','Kiwi fruit','Kolanuts','Leeks, other alliaceous veg','Leguminous vegetables, nes','Lemons and limes','Lentils','Lettuce and chicory','Linseed','Lupins','Maize','Maize, green','Mangoes, mangosteens, guavas','Manila Fibre (Abaca)','Maté','Melonseed','Millet','Mixed grain','Mushrooms and truffles','Mustard seed','Natural rubber','Nutmeg, mace and cardamoms','Nuts, nes','Oats','Oil palm fruit','Oilseeds, Nes','Okra','Olives','Onions (inc. shallots), green','Onions, dry','Oranges','Other Bastfibres','Other melons (inc.cantaloupes)','Papayas','Peaches and nectarines','Pears','Peas, dry','Peas, green','Pepper (Piper spp.)','Peppermint','Persimmons','Pigeon peas','Pineapples','Pistachios','Plantains','Plums and sloes','Popcorn','Poppy seed','Potatoes','Pulses, nes','Pumpkins, squash and gourds','Pyrethrum,Dried','Quinces','Quinoa','Ramie','Rapeseed','Raspberries','Rice, paddy','Roots and Tubers, nes','Rye','Safflower seed','Seed cotton','Sesame seed','Sisal','Sorghum','Sour cherries','Soybeans','Spices, nes','Spinach','Stone fruit, nes','Strawberries','String beans','Sugar beet','Sugar cane','Sugar crops, nes','Sunflower seed','Sweet potatoes','Tangerines, mandarins, clem.','Taro (cocoyam)','Tea','Tobacco, unmanufactured','Tomatoes','Triticale','Tung Nuts','Vanilla','Vegetables fresh nes','Vetches','Walnuts, with shell','Watermelons','Wheat','Yams','Yautia (cocoyam)']
+
 
 class Farmer():
     """Farmers have a name, a mobile phone number, and possibly belong to a coop"""
@@ -194,17 +197,60 @@ def getCoop(loc):
             smsPrint(scn, "Please reply with a numeric value. Which cooperative are you a member of?" + optionsStr)
     return coops[i-1]
 
+def getCrop():
+    """getLoc and getProvince could be refactored into getLoc and getProvince"""
+
+    confirmation = 'no'
+    likelyCrop = []
+    while confirmation.lower() != 'yes':
+        reply =  'What crop are you cultivating (e.g. '
+        smsPrint(scn, reply + random.choice(crops) + ')? Please try to spell the name as completely as possible.')
+        likelyCrop = searchList(getSMS(),crops)
+        if len(likelyCrop) == 1:
+            smsPrint(scn, "Are you cultivating "+likelyCrop[0]+"? (yes or no)")
+            confirmation = getSMS()
+        elif len(likelyCrop) == 0:
+            smsPrint(scn, "Please be more specific, no crop matches your spelling.")
+        else:
+            smsPrint(scn, "Please be more specific, many crops match your spelling: " + makeListStr(likelyCrop))
+    return likelyCrop[0]
+
 def offerMenu():
     optionsStr = makeListStr(['Rice','Mango','Pineapple','Banana','Coconut','Other (you can also just name them)'])
-    smsPrint(scn, "Welcome back to SMART Coops. What crops, produce are you currently growing?"+optionsStr)
+    smsPrint(scn, "What crops, produce are you currently growing?"+optionsStr)
+    ans = getSMS()
+    
 
+#Global variables
 scn = "+63 915 866 8018" #Smart Coops number
-sleepTime = .1
-getSMS()
+sleepTime = .1 #to simulate time in between SMS messages, 1.5 secs more realistic
 
-f = Farmer()
-firstTime()
-f.setName(getName())
-loc = Location(getGPSCoord())
-f.setCoop(getCoop(loc))
-offerMenu()
+class Usage(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+
+def main(argv=None):
+    """ As suggested in http://www.artima.com/weblogs/viewpost.jsp?thread=4829 """
+
+    if argv is None:
+        argv = sys.argv
+    try:
+        try:
+            opts, args = getopt.getopt(argv[1:], "h", ["help"])
+        except getopt.error, msg:
+             raise Usage(msg)
+        getSMS()
+        f = Farmer()
+        firstTime()
+        f.setName(getName())
+        loc = Location(getGPSCoord())
+        f.setCoop(getCoop(loc))
+        offerMenu()
+        
+    except Usage, err:
+        print >>sys.stderr, err.msg
+        print >>sys.stderr, "for help use --help"
+        return 2
+
+if __name__ == "__main__":
+    sys.exit(main())
