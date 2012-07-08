@@ -105,7 +105,7 @@ def affirmative(ans):
 
 def phPesos(value):
     """Formats a numerical value into a string with thousand separators ','"""
-    return '{:20,.2f}'.format(value)
+    return 'P'+'{:,.2f}'.format(value)
 
 def smsPrint(sendingNum, body):
     """Prints a pretty sms msg on the terminal"""
@@ -317,7 +317,7 @@ def applyLoanMenu(farmer):
 
 def viewLoanBalMenu(farmer):
     reply = "SMART Coops loan balance. Your current loan balance is "+phPesos(farmer.getLoanBal())
-    reply += "You currently have "+phPesos(farmer.getSavingsBal())+" in your savings account, available to purchase crop inputs."
+    reply += ". You currently have "+phPesos(farmer.getSavingsBal())+" in your savings account, available to purchase crop inputs."
     smsPrint(scn, reply + " Returning to previous menu.")
 
 def makeLoanPaymentMenu(farmer):
@@ -337,9 +337,41 @@ def loansMenu(farmer):
         except ValueError:
             smsPrint(scn, "Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
 
+
+def buyInputMenu(farmer,crop):
+    optionsStr = makeListStr([])
+    smsPrint(scn,"Buy inputs, general products menu. Current market price for gasolina is P45/litre and LPG P344/tank. Would you like to play an order for: 1) Gasolina, 2) LPG, 3) Back to inputs menu, 4) Back to main menu.")
+    smsPrint(scn,"Buy inputs, general products gasolina menu. How many litres of gasolina would you like to purchase? (ex: 34)")
+    smsPrint(scn, "You are about to purchase 10 litres for a total of P450, which will be devited from your account which currently holds P19,000. Reply 'yes' to confirm or 'no' to cancel")
+    smsPrint(scn, "Excellent. The purchase order has been sent to {{coop sales}}. Once the transaction is confirmed, your account will be debited by that amount. What category of product are you looking for? 1) General products, 2) Papayas inputs, 3) Mangoes inputs, 4) Eggs inputs, 5) Tilapia inputs, 6) Back to main menu")
+    smsPrint(scn, "Buy inputs, papayas input. What inputs are you interested in? 1) Crop medicine, 2) Fertilizer, 3) Seeds")
+    smsPrint(scn, "Buy inputs, papayas crop medicine menu. What crop medicine are you intersted in? 1) 2-4-D (weed killer), 2) Rogue (herbicide), 3) Puridan (insecticide), 4) Cynbus (insecticide), 5) Visokill (insecticide), 6) back to input menu, 7) Back to main menu")
+    smsPrint(scn, "Hello! How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Update farm profile, 6) Send SMART Coops a message")
+    smsPrint(scn, "Buy inputs menu. You currently have P19,000 in your electronic account. What category of product are you looking for? 1) General products, 2) Papayas inputs, 3) Mangoes inputs, 4) Eggs inputs, 5) Tilapia inputs, 6) Back to main menu")
+    smsPrint(scn, "Buy inputs, mangoes inputs. What inputs are you interested in? 1) Crop medicine, 2) Fertilizer, 3) Seeds, 4) back to input menu, 5) Back to main menu")
+    smsPrint(scn, "Buy inputs, mangoes fertilizer menu. What are you intersted in? 1) Organic fertilizer, 2) Triple 14 (fertilizer), 3) back to input menu, 5) Back to main menu")
+
 def inputsMenu(farmer):
-    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
-    smsPrint(scn, "This menu is not complete yet... Returning to main menu")
+    cropsList = []
+    for c in farmer.getCrops()["crops"]:
+        cropsList = [c + " inputs"]
+    optionsStr = makeListStr(["All products", cropsList[:], "Main menu"])
+    confirmation = 'no'
+    while not affirmative(confirmation):
+        reply = "Buy inputs menu. You currently have "+phPesos(farmer.getSavingsBal())
+        reply += " in your savings account. What would you like to buy/do:"+optionsStr
+        smsPrint(scn, reply)
+        ans = getSMS()
+        try:
+            if int(ans) == len(cropsList)+1:
+                confirmation = 'yes'
+            elif ans == '1':
+                buyInputMenu(farmer,'All products')
+            else:
+                buyInputMenu(farmer,farmer.getCrops()["crops"][int(ans)-2]) #-1 bcz indexing list, -1 because of 'All products' option
+        except ValueError:
+            smsPrint(scn, "Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
+
 def harvestMenu(farmer):
     optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
     smsPrint(scn, "This menu is not complete yet... Returning to main menu")
