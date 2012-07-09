@@ -10,6 +10,14 @@ There are currently two parts to this project. One is a Django web app that depl
 
 Install Python 2.5 or above for the SMS simulator. Install django 1.4 or above for the web app.
 
+## How to run the SMS Simulator
+
+Assuming you are in a posix environment (linux, macos) and that you have cloned this project to your system.
+
+% cd PATH-TO-PROJECT-DIR
+% cd pilot
+% python smsSimulator.py
+
 ## Copyright
 
 For the time being, all rights reserved to AntPortal Corp of Canada.
