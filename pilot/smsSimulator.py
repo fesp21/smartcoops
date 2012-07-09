@@ -24,7 +24,7 @@ class Farmer():
         self.savingsBal = savingsBal
 
     def getMobileNum(self):
-        return mobileNum
+        return self.mobileNum
     def setMobileNum(self, mobileNum):
         self.mobileNum = mobileNum
 
@@ -39,7 +39,7 @@ class Farmer():
         self.coop = coop
 
     def getCrops(self):
-        return crops
+        return self.crops
     def setCrops(self, crops):
         self.crops = crops
 
@@ -54,6 +54,9 @@ class Farmer():
         self.savingsBal = self.savingsBal - amount
     def savingsDeposit(self,amount):
         self.savingsBal = self.savingsBal + amount
+
+#For debugging purposes
+sampleFarmer = Farmer(12341234,'Danny Castonguay','San Benito Multipurpose Coop',[{'name':'Cloves','size':1.5},{'name':'Cocoa beans','size':12.7},{'name':'Coconuts','size':6},{'name':'Coffee, green','size':22}],1200000,600000)
 
 class Location():
     """Each exchange has a location as provided by the telco, which we use to inform the farmer of prices or local resources"""
@@ -98,7 +101,7 @@ def makeListStr(myList):
     myStr = ''
     for i in range(1,len(myList)+1):
         myStr = myStr + ' ' + str(i) + ") " + myList[i-1] + ','
-    return myStr[:-1]
+    return myStr[1:-1]
 
 def affirmative(ans):
     return any([ans.lower() == x for x in affirmativeAns])
@@ -124,7 +127,7 @@ def getSMS():
     print '\n'
     prompt = 'Send a new SMS to ' + scn + ' (SMART Coops) :\nMessage Content > '
     newSMS = raw_input(prompt)
-    print '\n                          Sending message\n\n\n\n\n',
+    print '\n                                     Message sent...\n\n\n\n\n',
     time.sleep(sleepTime)
     print '\n\n\n\n\n'
     return newSMS
@@ -237,31 +240,31 @@ def getCropSize(crop):
         smsPrint(scn, reply)
         ans = getSMS()
         try:
-            i = int(ans)
+            i = float(ans)
             smsPrint(scn, "You are cultivating "+ans+" hectares of "+crop+", is this correct? (yes or no)")
             confirmation = getSMS()
         except ValueError:
-            smsPrint(scn, "Please reply with a numeric value."+reply)
+            smsPrint(scn, "Please reply with a numeric value. "+reply)
     return ans
 
 def getCrops():
     """Prompts farmer for all of the crops being cultivated"""
     confirmation = 'no'
     crops = []
-    cropsSizes = {}
     while not affirmative(confirmation):
-        crops.append(getCropName())
-        cropsSizes[crops[-1]] = getCropSize(crops[-1])
-        cultivationList = []
+        cropName = getCropName()
+        cropSize = getCropSize(cropName)
+        crops.append({'name':cropName,'size':cropSize})
+        cropList = []
         for c in crops:
-            cultivationList.append(cropsSizes[c] + " hectares of " + c)
-        smsPrint(scn, "You are cultivating" + makeListStr(cultivationList) + ". Are you cultivating anything else? (yes or no)")
+            cropList.append(str(c['size']) + " hectares of " + c['name'])
+        smsPrint(scn, "You are cultivating" + makeListStr(cropList) + ". Are you cultivating anything else? (yes or no)")
         ans = getSMS()
         if affirmative(ans):
             confirmation = 'no'
         else:
             confirmation = 'yes'
-    return {'crops':crops,'sizes':cropsSizes}
+    return crops
 
 def firstTime():
     """Informs the farmer of what SMART Coop is, and of the cost"""
@@ -339,8 +342,23 @@ def loansMenu(farmer):
 
 
 def buyInputMenu(farmer,crop):
-    optionsStr = makeListStr([])
-    smsPrint(scn,"Buy inputs, general products menu. Current market price for gasolina is P45/litre and LPG P344/tank. Would you like to play an order for: 1) Gasolina, 2) LPG, 3) Back to inputs menu, 4) Back to main menu.")
+    confirmation = 'no'
+    likelyInput = []
+    while not affirmative(confirmation):
+        reply = "Buy inputs, " + crop + " menu. Please enter the name of the product you are looking for (e.g. "
+        smsPrint(scn, reply + random.choice(cropInputs) + ')? Please try to spell the name as completely as possible.')
+        likelyInput = searchList(getSMS(),cropInputs)
+        if len(likelyInput) == 1:
+            smsPrint(scn, "Are you  "+likelyCrop[0]+"? (yes or no)")
+            confirmation = getSMS()
+        elif len(likelyCrop) == 0:
+            smsPrint(scn, "Please be more specific, no crop matches your spelling.")
+        else:
+            smsPrint(scn, "Please be more specific, many crops match your spelling: " + makeListStr(likelyCrop))
+    return likelyCrop[0]
+    
+
+    smsPrint(scn, "Current market price for gasolina is P45/litre and LPG P344/tank. Would you like to play an order for: 1) Gasolina, 2) LPG, 3) Back to inputs menu, 4) Back to main menu.")
     smsPrint(scn,"Buy inputs, general products gasolina menu. How many litres of gasolina would you like to purchase? (ex: 34)")
     smsPrint(scn, "You are about to purchase 10 litres for a total of P450, which will be devited from your account which currently holds P19,000. Reply 'yes' to confirm or 'no' to cancel")
     smsPrint(scn, "Excellent. The purchase order has been sent to {{coop sales}}. Once the transaction is confirmed, your account will be debited by that amount. What category of product are you looking for? 1) General products, 2) Papayas inputs, 3) Mangoes inputs, 4) Eggs inputs, 5) Tilapia inputs, 6) Back to main menu")
@@ -352,23 +370,23 @@ def buyInputMenu(farmer,crop):
     smsPrint(scn, "Buy inputs, mangoes fertilizer menu. What are you intersted in? 1) Organic fertilizer, 2) Triple 14 (fertilizer), 3) back to input menu, 5) Back to main menu")
 
 def inputsMenu(farmer):
-    cropsList = []
-    for c in farmer.getCrops()["crops"]:
-        cropsList = [c + " inputs"]
-    optionsStr = makeListStr(["All products", cropsList[:], "Main menu"])
+    optionsList = []
+    for c in farmer.getCrops():
+        optionsList += [c["name"] + " inputs"]
+    optionsStr = makeListStr(["View all products"] + optionsList + ["Main menu"])
     confirmation = 'no'
     while not affirmative(confirmation):
         reply = "Buy inputs menu. You currently have "+phPesos(farmer.getSavingsBal())
-        reply += " in your savings account. What would you like to buy/do:"+optionsStr
+        reply += " in your savings account. What would you like to buy:"+optionsStr
         smsPrint(scn, reply)
         ans = getSMS()
         try:
-            if int(ans) == len(cropsList)+1:
+            if int(ans) == len(farmer.getCrops())+1: #+1 bcz 'View all products' is first option, which means main menu is selected option
                 confirmation = 'yes'
             elif ans == '1':
                 buyInputMenu(farmer,'All products')
             else:
-                buyInputMenu(farmer,farmer.getCrops()["crops"][int(ans)-2]) #-1 bcz indexing list, -1 because of 'All products' option
+                buyInputMenu(farmer,farmer.getCrops()[int(ans)-2]['name']) #-1 bcz indexing list, -1 because of 'All products' option
         except ValueError:
             smsPrint(scn, "Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
 
