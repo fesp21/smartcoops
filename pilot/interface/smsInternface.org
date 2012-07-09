@@ -115,56 +115,92 @@ github.com/edu
 bryanveloso
 
 * Daily financial transactions
-** Charge Invoice
+
+These are operations done by the Coops, not by the farmer. The information listed below is the same level of information that the Coop uses everyday. The San Benito Multipurpose Coop uses the terms "products" for crop inputs, and "articles" for produce. 
+
+** Product Charge Invoice
+
 *** Description
 when farmers borrow in kind from the cooperative; "pautang" of supplies; crop inputs or supplies such as LPG
+
 *** Fields
 - Date (of transaction)
 - Sold to (Customer/Farmer)
-- Description (Name of product or supply
-- Quantity (of each product or supply)
-- Unit price (of each product or supply)
-- Amount (Quantity * Unit Price)
-- Total Amount
+- For each product sold
+  -- Description (Name of product or supply)
+  -- Quantity (of each product or supply)
+  -- Unit price (of each product or supply)
+  -- Amount (Quantity * Unit Price)
+- Total Amount (Sum of Amounts for each product ordered)
+
 *** Sample SMS Format
-CHARGE<space>Customer/Description/Quantity/Unit Price
-** Delivery Receipt
+CHARGE Customer/Description/Quantity/Unit Price
+Examples:
+charge charlie santos/24D/2/25
+ChArGe ChArLiE SaNTos/viking/3/100
+charge charlie santos/viking/3/100/24D/2/25
+
+** Article Delivery Receipt
+
 *** Description
 when the coop delivers rice to market or a creditor; eg. Coop delivers rice to UP Los Baños; "deliver" does not always mean that the coop takes care of the transportation, it might also mean a pickup
+
 *** Fields
 - Delivery Receipt (Date of delivery)
 - Delivered to (Name of person/company that receives)
-- Articles (Description of product and quantity, eg. SKS Rice, NSIS - 30; Less VAT or Value Added Tax)
-- Unit price
-- Amount (Quantity * Unit Price)
-- Total (Amount of Product - VAT)
+- For each article sold
+  -- Articles (Description of product and quantity, eg. SKS Rice, NSIS - 30; Less VAT or Value Added Tax)
+  -- Unit price
+  -- Amount (Quantity * Unit Price)
+- Total Amount (Sum of Amounts for each article ordered)
+
 *** Sample SMS Format
-DELIVERY<space>Name/Articles/Unit Price
+DELIVERY Name/Articles/Quantity/Unit Price
+Examples:
+delivery UPLB/SKS Rice/3/1000
+delivery UPLB/SKS Rice/3/1000/NSIS/30/1000
+
 ** Official Receipt (OR)
+
 *** Description
 used for cash transactions only such as when a farmer pays his debts; in more complicated circumstances, it can also be tied in with a delivery receipt but for the purpose of the pilot, treat only as any cash transaction
+
 *** Fields
 - Date (of transaction)
 - Received from (Name of payer)
 - Particulars (Description of payment, eg. payment for rice)
 - Amount
 - Total (of all particulars)
+
 *** Sample SMS Format
-OR<space>Received from/Particulars/Amount
+OR Received from/Particulars/Amount
+Examples:
+or Charlie Santos/payment for rice/10000
+or Charlie Santos/payment for fuel/300/pinapple seeds/1500/24D/400
+
 ** Cash Voucher
+
 *** Description
 when the coop disburses cash loans to member farmers; also used for when they incur expenses, eg. Xerox Php14.00
+
 *** Fields
 - Date
 - Name
 - Description (pre-filled in the voucher with "Amount payable", "Gasoline and oil", etc. but any will do)
 - Amount
 - Explanation (a more detailed description but can be combined with "Description")
+
 *** Sample SMS Format
-CASHVOUCHER<Name/Description/Amount
+CASHVOUCHER Name/Description/Amount
+Examples:
+cashvoucher Charlie Santos/loan/20000
+cashvoucher Onyo Aquino/xerox/14 [in this case, Onyo is the coop officer who used his personal money to buy a xerox and then got reimbursed by the coop]
+
 ** Commodity Slip
+
 *** Description
 when farmers pay in kind such as bringing their rice sacks to pay for their loan
+
 *** Fields
 - Date
 - Received from (Name of farmer)
@@ -175,22 +211,35 @@ when farmers pay in kind such as bringing their rice sacks to pay for their loan
 - MC (moisture content as determined by coop, may not be as important as a financial transaction)
 - Remarks (Price set = Bags * Kilos * Unit Price)
 - Total Amount
+
 *** Sample Format
-COMMODITY<space>Name/Description/Bags/Kilos/Unit Price/Amount
+COMMODITY Name/Description/Bags/Kilos/Unit Price
+Examples:
+commodity Charlie Santos/MS6/4/200/15/ [4 bags for a total of 200kilos, at 15PHP for each kilo]
+
 ** Stock cards
+
 *** Description
 are used for tracking inventory, eg. fertilizer, rat poison, LPG; there are currently around 30 types of inventory kept by the coop
+
 *** Fields
 - Date
 - Name of Product (eg. Granaxone, 24D)
 - Received (when inventory is received from Supplier) or Sold (either for credit or purchase)
 - Purchaser (can also be the supplier but the coop does not currently keep track of supplier)
-- Inventory number (unclear as to what this is)
+- Invoice number
 - Quantity (Unit is inferred from type of stock)
 - Stock on Hand (less or plus every purchase or receipt of inventory)
+
 *** Fields
-REC<space>Product/Inventory Number/Quantity/Stock on Hand
-SOLD<space>Product/Inventory Number/Quantity/Stock on Hand
+REC Product/Invoice Number/Quantity/Stock on Hand
+Examples:
+REC granaxone/
+
+SOLD Product/Inventory Number/Quantity/Stock on Hand
+Examples:
+
+
 ** Ledger
 *** Description
 where the accounts of each member is kept; data is manually transferred from the different types of invoices; essentially, this is would be the report that will be generated based on the transactions above except for the Stock Cards
