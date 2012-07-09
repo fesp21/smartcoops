@@ -341,13 +341,13 @@ def loansMenu(farmer):
         except ValueError:
             smsPrint(scn, "Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
 
-
 def buyInputMenu(farmer,crop):
     confirmation = 'no'
     likelyInput = []
     while not affirmative(confirmation):
         reply = "Buy inputs, " + crop + " menu. Please enter the name of the product you are looking for (e.g. "
-        smsPrint(scn, reply + random.choice(cropInputs) + ')? Please try to spell the name as completely as possible.')
+        randomInput = random.choice(cropInputs)
+        smsPrint(scn, reply + randomInput["productName"] + ' manufactured by ' + randomInput["brand"] + ')? Please try to spell the name as completely as possible.')
         likelyInput = searchList(getSMS(),cropInputs)
         if len(likelyInput) == 1:
             smsPrint(scn, "Are you  "+likelyCrop[0]+"? (yes or no)")
