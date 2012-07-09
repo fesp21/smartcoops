@@ -16,13 +16,14 @@ cropInputs = cropInputsData.cropInputs
 class Farmer():
     """Farmers have a name, a mobile phone number, and possibly belong to a coop"""
 
-    def __init__(self, mobileNum = None, name = None, coop = None, crops = None, loanBal = 0, savingsBal = 0):
+    def __init__(self, mobileNum = None, name = None, coop = None, crops = None, loanBal = 0, savingsBal = 0, purchaseHist = []):
         self.mobileNum = mobileNum
         self.name = name
         self.coop = coop
         self.crops = crops
         self.loanBal = loanBal
         self.savingsBal = savingsBal
+        self.purchaseHist = purchaseHist
 
     def getMobileNum(self):
         return self.mobileNum
@@ -55,6 +56,11 @@ class Farmer():
         self.savingsBal = self.savingsBal - amount
     def savingsDeposit(self,amount):
         self.savingsBal = self.savingsBal + amount
+
+    def getPurchaseHist(self):
+        return self.purchaseHist
+    def setPurchaseHist(self, purchaseHist): #eventually should create add/delete methods for purchase history
+        self.purchaseHist = purchaseHist
 
 #For debugging purposes
 sampleFarmer = Farmer(12341234,'Danny Castonguay','San Benito Multipurpose Coop',[{'name':'Cloves','size':1.5},{'name':'Cocoa beans','size':12.7},{'name':'Coconuts','size':6},{'name':'Coffee, green','size':22}],1200000,600000)
@@ -96,6 +102,16 @@ def searchList(myStr, myList):
         r = re.search(pattern,l)
         if r is not None:
             results.append(r.group())
+    return results
+
+def searchListDict(myStr, myListDict, key):
+    """Returns the set of dictionaries resulting from a substring search over specific key"""
+    pattern = re.compile(r'.*'+myStr+'.*', re.IGNORECASE)
+    results = []
+    for d in myListDict:
+        r = re.search(pattern,d[key])
+        if r is not None:
+            results.append(d)
     return results
 
 def makeListStr(myList):
@@ -209,7 +225,7 @@ def getCoop(loc):
                 coops = getNearbyCoops(loc)
                 optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
                 reply = "I see that you are sending messages from near "+loc.getName()
-                smsPrint(scn, reply + +". Which cooperative are you a member of? " + optionsStr)
+                smsPrint(scn, reply +". Which cooperative are you a member of? " + optionsStr)
             elif i == len(coops)+2:
                 return None
         except ValueError:
@@ -336,8 +352,10 @@ def loansMenu(farmer):
         try:
             if int(ans) == 4:
                 confirmation = 'yes'
-            else:
+            elif int(ans) in range(1,4):
                 {1:applyLoanMenu,2:viewLoanBalMenu,3:makeLoanPaymentMenu}[int(ans)](farmer)
+            else:
+                smsPrint(scn, "Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
         except ValueError:
             smsPrint(scn, "Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
 
@@ -347,28 +365,42 @@ def buyInputMenu(farmer,crop):
     while not affirmative(confirmation):
         reply = "Buy inputs, " + crop + " menu. Please enter the name of the product you are looking for (e.g. "
         randomInput = random.choice(cropInputs)
-        smsPrint(scn, reply + randomInput["productName"] + ' manufactured by ' + randomInput["brand"] + ')? Please try to spell the name as completely as possible.')
-        likelyInput = searchList(getSMS(),cropInputs)
+        smsPrint(scn, reply + randomInput["productName"] + ' manufactured by ' + randomInput["brand"] + ') or reply 0 to return to previous menu. Please try to spell the product name as completely as possible.')
+        ans = getSMS()
+        if ans == '0':
+            return farmer
+        likelyInput =  searchListDict(ans, cropInputs, "productName")
         if len(likelyInput) == 1:
-            smsPrint(scn, "Are you  "+likelyCrop[0]+"? (yes or no)")
-            confirmation = getSMS()
-        elif len(likelyCrop) == 0:
-            smsPrint(scn, "Please be more specific, no crop matches your spelling.")
+            ic = likelyInput[0]
+            name = ic["productName"]
+            price = ic["price"]
+            units = ic["units"]
+            smsPrint(scn, "Are you interested in buying "+name+" for the price of "+phPesos(price)+" per "+units+"? (yes or no)")
+            ans = getSMS()
+            if affirmative(ans):
+                smsPrint(scn, "How many units of "+name+" do you want to buy for the price of "+phPesos(price)+" per "+units+"? (Please answer a number)")
+                try:
+                    quantity = int(getSMS())
+                    if quantity >= 0:
+                        amount = quantity*price
+                        farmer.savingsWithdraw(amount)
+                        ic["purchaseDate"] = datetime.now().strftime("%a, %b %d at %I:%M%p")
+                        ic["quantity"] = quantity
+                        ic["amount"] = amount
+                        farmer.setPurchaseHist(farmer.getPurchaseHist().append(ic))
+                        reply = "You have purchased "+str(quantity)+units+" of "+name+" for the total amount of "+phPesos(amount)
+                        reply += ". Your new savings account balance is "+phPesos(farmer.getSavingsBal())+"."
+                        smsPrint(scn, reply)
+                except ValueError:
+                    smsPrint(scn, "Please reply with an whole number. Your reply: '" + quantity + "' is not valid")
+        elif len(likelyInput) == 0:
+            smsPrint(scn, "Unfortunately, no crop input matches your spelling.")
         else:
-            smsPrint(scn, "Please be more specific, many crops match your spelling: " + makeListStr(likelyCrop))
-    return likelyCrop[0]
-    
-
-    smsPrint(scn, "Current market price for gasolina is P45/litre and LPG P344/tank. Would you like to play an order for: 1) Gasolina, 2) LPG, 3) Back to inputs menu, 4) Back to main menu.")
-    smsPrint(scn,"Buy inputs, general products gasolina menu. How many litres of gasolina would you like to purchase? (ex: 34)")
-    smsPrint(scn, "You are about to purchase 10 litres for a total of P450, which will be devited from your account which currently holds P19,000. Reply 'yes' to confirm or 'no' to cancel")
-    smsPrint(scn, "Excellent. The purchase order has been sent to {{coop sales}}. Once the transaction is confirmed, your account will be debited by that amount. What category of product are you looking for? 1) General products, 2) Papayas inputs, 3) Mangoes inputs, 4) Eggs inputs, 5) Tilapia inputs, 6) Back to main menu")
-    smsPrint(scn, "Buy inputs, papayas input. What inputs are you interested in? 1) Crop medicine, 2) Fertilizer, 3) Seeds")
-    smsPrint(scn, "Buy inputs, papayas crop medicine menu. What crop medicine are you intersted in? 1) 2-4-D (weed killer), 2) Rogue (herbicide), 3) Puridan (insecticide), 4) Cynbus (insecticide), 5) Visokill (insecticide), 6) back to input menu, 7) Back to main menu")
-    smsPrint(scn, "Hello! How many SMART Coops help you today? 1) Loan, 2) Buy inputs, 3) Sell produce, 4) Harvesting education, 5) Update farm profile, 6) Send SMART Coops a message")
-    smsPrint(scn, "Buy inputs menu. You currently have P19,000 in your electronic account. What category of product are you looking for? 1) General products, 2) Papayas inputs, 3) Mangoes inputs, 4) Eggs inputs, 5) Tilapia inputs, 6) Back to main menu")
-    smsPrint(scn, "Buy inputs, mangoes inputs. What inputs are you interested in? 1) Crop medicine, 2) Fertilizer, 3) Seeds, 4) back to input menu, 5) Back to main menu")
-    smsPrint(scn, "Buy inputs, mangoes fertilizer menu. What are you intersted in? 1) Organic fertilizer, 2) Triple 14 (fertilizer), 3) back to input menu, 5) Back to main menu")
+            randomInput = random.choice(cropInputs)
+            reply = "Please be more specific, many crop inputs match your spelling, such as "
+            reply += randomInput["productName"] + ' manufactured by ' + randomInput["brand"] + "."
+            smsPrint(scn, reply)
+    return farmer
 
 def inputsMenu(farmer):
     optionsList = []
@@ -382,7 +414,7 @@ def inputsMenu(farmer):
         smsPrint(scn, reply)
         ans = getSMS()
         try:
-            if int(ans) == len(farmer.getCrops())+1: #+1 bcz 'View all products' is first option, which means main menu is selected option
+            if int(ans) > len(farmer.getCrops())+1: #+1 bcz 'View all products' is first option, which means main menu is selected option
                 confirmation = 'yes'
             elif ans == '1':
                 buyInputMenu(farmer,'All products')
@@ -397,9 +429,27 @@ def harvestMenu(farmer):
 def adviceMenu(farmer):
     optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
     smsPrint(scn, "This menu is not complete yet... Returning to main menu")
+
 def farmerProfileMenu(farmer):
-    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
-    smsPrint(scn, "This menu is not complete yet... Returning to main menu")
+    #confirmation = 'no'
+    #    while not affirmative(confirmation):
+    reply = "Name: "+ farmer.getName() + ". "
+    reply += "Coop: "+ farmer.getCoop() + ". "
+    cropList = []
+    for c in farmer.getCrops():
+        cropList.append(c['name']+" on "+str(c['size'])+" hectares")
+    reply += "Crops cultivated: "+ makeListStr(cropList) + ". "
+    reply += "Current loan balance: " + phPesos(farmer.getLoanBal()) + ". "
+    reply += "Current savings balance: " + phPesos(farmer.getSavingsBal()) + ". "
+    optionsStr = makeListStr(['View purchase history', 'Change name', 'Change coop', 'Change crops', 'Main menu'])
+    reply += "What actions would you like to take: "+optionsStr
+    smsPrint(scn, reply)
+    ans = getSMS()
+    #    try:
+    #       {1:loansMenu,2:inputsMenu,3:harvestMenu,4:adviceMenu,5:farmerProfileMenu,6:contactSCMenu}[int(ans)](farmer)
+    #  except ValueError:
+    #     smsPrint(scn, "Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
+
 def contactSCMenu(farmer):
     optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
     smsPrint(scn, "This menu is not complete yet... Returning to main menu")
