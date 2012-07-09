@@ -1,6 +1,6 @@
 import re, csv, time, random, getopt, sys, locale
 from datetime import datetime
-import philippinesData
+import philippinesData, cropInputsData
 
 #Global variables
 scn = "+63 915 866 8018" #Smart Coops number
@@ -11,6 +11,7 @@ provinces = philippinesData.provinces
 citiesOrMunici = philippinesData.citiesOrMunici
 coops = philippinesData.coops
 crops = philippinesData.crops
+cropInputs = cropInputsData.cropInputs
 
 class Farmer():
     """Farmers have a name, a mobile phone number, and possibly belong to a coop"""
@@ -193,7 +194,7 @@ def getCoop(loc):
     optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
     confirmation = ''
     reply = "I see that you are sending messages from near "+loc.getName()
-    smsPrint(scn, reply +". Which cooperative are you a member of?"+optionsStr)
+    smsPrint(scn, reply +". Which cooperative are you a member of? "+optionsStr)
     while not affirmative(confirmation):
         ans = getSMS()
         try:
@@ -208,7 +209,7 @@ def getCoop(loc):
                 coops = getNearbyCoops(loc)
                 optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
                 reply = "I see that you are sending messages from near "+loc.getName()
-                smsPrint(scn, reply + +". Which cooperative are you a member of?" + optionsStr)
+                smsPrint(scn, reply + +". Which cooperative are you a member of? " + optionsStr)
             elif i == len(coops)+2:
                 return None
         except ValueError:
@@ -258,7 +259,7 @@ def getCrops():
         cropList = []
         for c in crops:
             cropList.append(str(c['size']) + " hectares of " + c['name'])
-        smsPrint(scn, "You are cultivating" + makeListStr(cropList) + ". Are you cultivating anything else? (yes or no)")
+        smsPrint(scn, "You are cultivating " + makeListStr(cropList) + ". Are you cultivating anything else? (yes or no)")
         ans = getSMS()
         if affirmative(ans):
             confirmation = 'no'
@@ -377,7 +378,7 @@ def inputsMenu(farmer):
     confirmation = 'no'
     while not affirmative(confirmation):
         reply = "Buy inputs menu. You currently have "+phPesos(farmer.getSavingsBal())
-        reply += " in your savings account. What would you like to buy:"+optionsStr
+        reply += " in your savings account. What would you like to buy: "+optionsStr
         smsPrint(scn, reply)
         ans = getSMS()
         try:
