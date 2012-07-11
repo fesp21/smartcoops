@@ -1,10 +1,12 @@
 * SMS Examples
 
 ** Shorthand
+#+BEGIN_QUOTE
 s: stands for "scsms sends sms" [scsms stands for SMART Coops sms server]
 f: stands for "farmer sends sms"
 [some comment]: helpful comments to understand the dynamics
 "*": wild card meaning "user sends some content, or no content at all, which is not a command recognized scsms"
+#+END_QUOTE
 
 ** Firt time sign up, ask for name
 [SMART_Coops.number = +63 151 888 4444]
