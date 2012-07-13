@@ -233,7 +233,7 @@ def getCityOrM(province):
     else:
         return getItemFromList('city or municipality',likelyCitiesOrM)
 
-def getCoop2(loc = None):
+def getCoop(loc = None):
     if loc == None:
         gpsCoord = getGPSCoord()
         loc = Location(getNearbyProvince(gpsCoord), getNearbyCityOrM(gpsCoord), gpsCoord)
@@ -254,46 +254,16 @@ def getCoop2(loc = None):
         elif i == len(coops)+1:
             loc.setProvince(getProvince())
             loc.setCityOrM(getCityOrM(loc.getProvince()))
-            return getCoop2(loc)
+            return getCoop(loc)
         elif i == len(coops)+2:
             return None
         else:
             raise ValueError
     except ValueError:
         smsPrint("I don't understand. Your answer '"+ans+"' is not one of the menu options.")
-        getCoop2(loc)
-
-def getCoopOld(loc):
-    coops = getNearbyCoops(loc)
-    optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
-    reply = "I see that you are sending messages from near "+loc.getName()
-    reply += ". Which cooperative are you a member of? "+optionsStr
-    smsPrint(reply)
-    while not affirmative(confirmation):
-        ans = getSMS()
-        try:
-            i = int(ans)
-            if i in range(1,len(coops)+1):
-                smsPrint("You are a member of "+coops[i-1]+", is this correct? (yes or no)")
-                confirmation = getSMS()
-            elif i == len(coops)+1:
-                province = getProvince()
-                city = getCityOrM(province)
-                loc.setName(city + ', ' + province)
-                coops = getNearbyCoops(loc)
-                optionsStr = makeListStr(coops+['Other', 'Not member of a cooperative'])
-                reply = "I see that you are sending messages from near "+loc.getName()
-                smsPrint(reply +". Which cooperative are you a member of? " + optionsStr)
-            elif i == len(coops)+2:
-                return None
-            else:
-                smsPrint("I don't understand. Your answer '"+ans+"' is not one of the menu options. "+reply)
-        except ValueError:
-            smsPrint("Please reply with a numeric value. Which cooperative are you a member of? " + optionsStr)
-    return coops[i-1]
+        getCoop(loc)
 
 def getCropName():
-    """getCityOrM and getProvince could be refactored into getCityOrM and getProvince"""
     confirmation = 'no'
     likelyCrop = []
     reply =  'What crop are you cultivating (e.g. '
@@ -381,7 +351,7 @@ def firstTime():
     smsPrint(s)
     f = Farmer()
     f.setName(getName())
-    f.setCoop(getCoop2())
+    f.setCoop(getCoop())
     f.setCrops(getCrops())
     return f
 
