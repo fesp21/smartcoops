@@ -4,7 +4,7 @@ import philippinesData, cropInputsData
 
 #Global variables
 scn = "+63 915 866 8018" #Smart Coops number
-sleepTime = .1 #to simulate time in between SMS messages, 1.5 secs more realistic
+sleepTime = 0 #to simulate time in between SMS messages, 1.5 secs more realistic
 affirmativeAns = ['yes','y','ye','ya','oo','yeah','yup','1']
 
 provinces = philippinesData.provinces
@@ -162,13 +162,16 @@ def getName():
     name = getSMS()
     smsPrint("Pleased to meet you "+name+". Did I get your name correctly? (Reply yes or no). ")
     if affirmative(getSMS()):
-        smsPrint("Great, thank you for confirming your name, "+name+". SMART Coops helps you find out about prices for crop inputs, crop produce, loans, and more.")
+        reply = "Great, thank you for confirming your name, "+name
+        reply += ". SMART Coops helps you find out about prices for crop inputs, crop produce, loans, and more."
+        smsPrint(reply)
         return name
     else:
         return getName()
 
 def getGPSCoord():
-    """presumably we would retrive information from the telco as to the location from where the farmer is calling from, and use that in the getCoop function, not implemented"""
+    """presumably we would retrive information from the telco as to the location from where the farmer is calling from, 
+    and use that in the getCoop function, not implemented"""
     return 0
 
 def getNearbyProvince(gpsCoord):
@@ -202,7 +205,7 @@ def getItemFromList(itemType, myList):
 
 def getProvince():
     reply = 'What province is your farm located in (e.g. '+ random.choice(provinces) 
-    reply += ')? You may spell only a few letters and we will search for it.'
+    reply += ')? You may spell only a few letters and I will search for it.'
     smsPrint(reply)
     ans = getSMS()
     likelyProvinces = searchList(ans,provinces)
@@ -210,6 +213,8 @@ def getProvince():
         smsPrint("Is your farm located in "+likelyProvinces[0]+"? (yes or no)")
         if affirmative(getSMS()):
             return likelyProvinces[0]
+        else:
+            return getProvince()
     elif len(likelyProvinces) == 0:
         smsPrint("No provinces found that match '"+ans+"'.")
         return getProvince()
@@ -219,7 +224,7 @@ def getProvince():
 def getCityOrM(province):
     reply =  'Your farm is in '+province+' province. What city or municipality is it located nearest to (e.g. '
     reply += random.choice(citiesOrM[province])
-    reply += ')? You may spell only a few letters and we will search for it.'
+    reply += ')? You may spell only a few letters and I will search for it.'
     smsPrint(reply)
     ans = getSMS()
     likelyCitiesOrM = searchList(ans,citiesOrM[province])
@@ -227,8 +232,10 @@ def getCityOrM(province):
         smsPrint("Is your farm located in "+likelyCitiesOrM[0]+", "+province+"? (yes or no)")
         if affirmative(getSMS()):
             return likelyCitiesOrM[0]
+        else:
+            return getCityOrM(province)
     elif len(likelyCitiesOrM) == 0:
-        smsPrint("No provinces found that match '"+ans+"'.")
+        smsPrint("No cities or municipalities found that match '"+ans+"'.")
         return getCityOrM(province)
     else:
         return getItemFromList('city or municipality',likelyCitiesOrM)
@@ -264,49 +271,42 @@ def getCoop(loc = None):
         getCoop(loc)
 
 def getCropName():
-    confirmation = 'no'
-    likelyCrop = []
-    reply =  'What crop are you cultivating (e.g. '
-    smsPrint(reply + random.choice(crops) + ')? Please try to spell the name as completely as possible.')
-    while not affirmative(confirmation):
-        ans = getSMS()
-        likelyCrop = searchList(ans,crops)
-        if len(likelyCrop) == 1:
-            smsPrint("Are you cultivating "+likelyCrop[0]+"? (yes or no)")
-            confirmation = getSMS()
-        elif len(likelyCrop) == 0:
-            smsPrint("Please try again, I could not find any crop that matches the spelling '"+ans+"'.")
+    reply =  'What crop is your farm cultivating (e.g. ' + random.choice(crops)
+    reply += ')? You may spell only a few letters and I will search for it.'
+    smsPrint(reply)
+    ans = getSMS()
+    likelyCrops = searchList(ans,crops)
+    if len(likelyCrops) == 1:
+        smsPrint("Is your farm cultivating "+likelyCrops[0]+"? (yes or no)")
+        if affirmative(getSMS()):
+            return likelyCrops[0]
         else:
-            smsPrint("Here is the list (please reply with corresponding number): " + makeListStr(likelyCrop))
-            try:
-                ans = int(getSMS())
-                if 0 < ans and ans <= len(likelyCrop):
-                    likelyCrop = [likelyCrop[ans-1]]
-                    smsPrint("Are you cultivating "+likelyCrop[0]+"? (yes or no)")
-                    confirmation = getSMS()
-                else:
-                    smsPrint("I don't understand, your answer '"+str(ans)+"' is not one of the options.")
-            except ValueError:
-                smsPrint("I don't understand, your answer '"+ans+"' is not one of the options.")
-        if not affirmative(confirmation):
-            reply =  'What other crop are you cultivating (e.g. '
-            smsPrint(reply + random.choice(crops) + ')? Please try to spell the name as completely as possible.')
-    return likelyCrop[0]
+            return getCropName()
+    elif len(likelyCrops) == 0:
+        smsPrint("No crops found that matches '"+ans+"'.")
+        return getCropName()
+    else:
+        return getItemFromList('crop',likelyCrops)
 
 def getCropSize(crop):
     """Prompts user for the size of the crop farming"""
-    confirmation = 'no'
-    reply = 'You are cultivating '+crop+', please try to estimate the number of hectares on which you are cultivating '+crop
-    while not affirmative(confirmation):
-        smsPrint(reply)
-        ans = getSMS()
-        try:
-            i = float(ans)
+    ansEx =  str(random.randint(0,20))+'.'+str(random.randint(0,9))
+    reply = 'Your farm is cultivating '+crop+', please try to estimate the number of hectares (e.g. '
+    reply += ansEx + ') for this crop.'
+    smsPrint(reply)
+    ans = getSMS()
+    try:
+        if float(ans) >= 0:
             smsPrint("You are cultivating "+ans+" hectares of "+crop+", is this correct? (yes or no)")
-            confirmation = getSMS()
-        except ValueError:
-            smsPrint("I cannot understand your response. Please reply with a numeric value.")
-    return ans
+            if affirmative(getSMS()):
+                return float(ans)
+            else:
+                getCropSize(crop)
+        else:
+            raise ValueError
+    except ValueError:
+        smsPrint("I cannot understand your response. '"+ans+"' is not a valid answer (e.g. "+ansEx+").")
+        getCropSize(crop)
 
 def getCrops():
     """Prompts farmer for all of the crops being cultivated"""
@@ -314,7 +314,7 @@ def getCrops():
     crops = []
     while not affirmative(confirmation):
         cropName = getCropName()
-        cropSize = getCropSize(cropName)
+        cropSize = float(getCropSize(cropName))
         crops.append({'name':cropName,'size':cropSize})
         cropList = []
         for c in crops:
