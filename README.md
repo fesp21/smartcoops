@@ -6,9 +6,11 @@ We bring a marketplace and mobile banking to agricultural coops. Check out the w
 
 Assuming you are in a posix environment (linux, macos) and that you have cloned this project to your system.
 
-`% cd PATH-TO-PROJECT-DIR
-% cd pilot
-% python smsSimulator.py`
+> `% cd PATH-TO-PROJECT-DIR`
+
+> `% cd pilot`
+
+> `% python smsSimulator.py`
 
 ## Manifest
 
