@@ -301,31 +301,26 @@ def getCropSize(crop):
             if affirmative(getSMS()):
                 return float(ans)
             else:
-                getCropSize(crop)
+                return getCropSize(crop)
         else:
             raise ValueError
     except ValueError:
         smsPrint("I cannot understand your response. '"+ans+"' is not a valid answer (e.g. "+ansEx+").")
-        getCropSize(crop)
+        return getCropSize(crop)
 
-def getCrops():
+def getCrops(crops = []):
     """Prompts farmer for all of the crops being cultivated"""
-    confirmation = 'no'
-    crops = []
-    while not affirmative(confirmation):
-        cropName = getCropName()
-        cropSize = float(getCropSize(cropName))
-        crops.append({'name':cropName,'size':cropSize})
-        cropList = []
-        for c in crops:
-            cropList.append(str(c['size']) + " hectares of " + c['name'])
-        smsPrint("You are cultivating " + makeListStr(cropList) + ". Are you cultivating anything else? (yes or no)")
-        ans = getSMS()
-        if affirmative(ans):
-            confirmation = 'no'
-        else:
-            confirmation = 'yes'
-    return crops
+    cropName = getCropName()
+    cropSize = float(getCropSize(cropName))
+    crops.append({'name':cropName,'size':cropSize})
+    cropNameSizeStrList = []
+    for c in crops:
+        cropNameSizeStrList.append(str(c['size']) + " hectares of " + c['name'])
+        smsPrint("You are cultivating " + makeListStr(cropNameSizeStrList) + ". Are you cultivating anything else? (yes or no)")
+    if affirmative(getSMS()):
+        return getCrops(crops)
+    else:
+        return crops
 
 def firstTime():
     """Informs the farmer of what SMART Coop is, and of the cost"""
@@ -356,27 +351,24 @@ def firstTime():
     return f
 
 def applyLoanMenu(farmer):
-    confirmation = 'no'
-    while not affirmative(confirmation):
-        reply = "SMART Coops apply for loan. Your current loan balance is "+phPesos(farmer.getLoanBal())
-        reply = reply+". Please reply with the amount of loan you would like to apply for (numeric value only, in PHP)."
-        smsPrint(reply)
-        loanAmount = getSMS()
-        try:
-            l = int(loanAmount)
-            smsPrint("You are about to apply for a loan of "+phPesos(l)+", is the amount correct? (yes or no)")
-            ans = getSMS()
-            if affirmative(ans):
-                farmer.setLoanBal(farmer.getLoanBal()+l)
-                farmer.savingsDeposit(l)
-                reply = "Congratulation, your loan has been approved. "+phPesos(l)+" has been deposited in your account. "
+    reply = "SMART Coops apply for loan. Your current loan balance is "+phPesos(farmer.getLoanBal())
+    reply += ". Please reply with the amount of loan you would like to apply for (numeric value only, in PHP)."
+    smsPrint(reply)
+    loan = getSMS()
+    try:
+        if int(loan)>0:
+            smsPrint("You are about to apply for a loan of "+phPesos(int(loan))+", is the amount correct? (yes or no)")
+            if affirmative(getSMS()):
+                farmer.setLoanBal(farmer.getLoanBal()+int(loan))
+                farmer.savingsDeposit(int(loan))
+                reply = "Congratulation, your loan has been approved. "+phPesos(int(loan))+" has been deposited in your account. "
                 reply += "Your new loan balance is "+phPesos(farmer.getLoanBal())+". Returning to previous menu."
                 smsPrint(reply)
-                confirmation = 'yes'
-            else:
-                confirmation = 'no'
-        except ValueError:
-            smsPrint("I do not understand. Please reply with a numeric value. Your reply: '" + loadAmount + "' is not a numerical value.")
+        else:
+            raise ValueError
+    except ValueError:
+        smsPrint("Your reply: '" + loan + "' is not a positve numerical value.")
+        applyLoanMenu(farmer)
 
 def viewLoanBalMenu(farmer):
     reply = "SMART Coops loan balance. Your current loan balance is "+phPesos(farmer.getLoanBal())
@@ -384,23 +376,43 @@ def viewLoanBalMenu(farmer):
     smsPrint(reply + " Returning to previous menu.")
 
 def makeLoanPaymentMenu(farmer):
-    smsPrint("This menu is not complete yet... Returning to previous menu")
+    reply = "SMART Coops make loan payment. Your current loan balance is "+phPesos(farmer.getLoanBal())
+    reply += " and your savings balance is "+phPesos(farmer.getSavingsBal())
+    reply += ". Please reply with the amount of loan you would to pay back (numeric value only, in PHP)."
+    smsPrint(reply)
+    payment = getSMS()
+    try:
+        if 0 < int(payment) and int(payment) <= farmer.getSavingsBal() :
+            smsPrint("You are about to make a loan payment of "+phPesos(int(payment))+", is the amount correct? (yes or no)")
+            if affirmative(getSMS()):
+                farmer.setLoanBal(farmer.getLoanBal()-int(payment))
+                farmer.savingsWithdraw(int(payment))
+                reply = "Congratulation, your loan payment has been processed. "+phPesos(int(payment))
+                reply += " has been paid from your savings account. "
+                reply += "Your new loan balance is "+phPesos(farmer.getLoanBal())+". Returning to previous menu."
+                smsPrint(reply)
+        else:
+            raise ValueError
+    except ValueError:
+        reply = "Your reply '" + payment + "' is not a positive numerical value or is greater than "
+        reply += phPesos(farmer.getSavingsBal()) + ", your current savings account balance."
+        smsPrint(reply)
+        makeLoanPaymentMenu(farmer)
 
 def loansMenu(farmer):
     optionsStr = makeListStr(['Apply for loan','View loan balance','Make loan payment','Main menu'])
-    confirmation = 'no'
-    while not affirmative(confirmation):
-        smsPrint("SMART Coops loans menu. What would you like to do: "+optionsStr)
-        ans = getSMS()
-        try:
-            if int(ans) == 4:
-                confirmation = 'yes'
-            elif int(ans) in range(1,4):
-                {1:applyLoanMenu,2:viewLoanBalMenu,3:makeLoanPaymentMenu}[int(ans)](farmer)
-            else:
-                smsPrint("Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
-        except ValueError:
-            smsPrint("Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
+    smsPrint("SMART Coops loans menu. What would you like to do: "+optionsStr)
+    ans = getSMS()
+    try:
+        if int(ans) in range(1,4):
+            {1:applyLoanMenu,2:viewLoanBalMenu,3:makeLoanPaymentMenu}[int(ans)](farmer)
+        elif int(ans) == 4:
+            return
+        else:
+            raise ValueError
+    except ValueError:
+        smsPrint("Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
+        loansMenu(farmer)
 
 def buyInputMenu(farmer,crop):
     confirmation = 'no'
@@ -478,10 +490,10 @@ def farmerProfileMenu(farmer):
     #    while not affirmative(confirmation):
     reply = "Name: "+ farmer.getName() + ". "
     reply += "Coop: "+ farmer.getCoop() + ". "
-    cropList = []
+    cropNameSizeStrList = []
     for c in farmer.getCrops():
-        cropList.append(c['name']+" on "+str(c['size'])+" hectares")
-    reply += "Crops cultivated: "+ makeListStr(cropList) + ". "
+        cropNameSizeStrList.append(c['name']+" on "+str(c['size'])+" hectares")
+    reply += "Crops cultivated: "+ makeListStr(cropNameSizeStrList) + ". "
     reply += "Current loan balance: " + phPesos(farmer.getLoanBal()) + ". "
     reply += "Current savings balance: " + phPesos(farmer.getSavingsBal()) + ". "
     optionsStr = makeListStr(['View purchase history', 'Change name', 'Change coop', 'Change crops', 'Main menu'])
