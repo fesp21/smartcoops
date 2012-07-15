@@ -1,6 +1,8 @@
 # smartcoops
 
-We bring a marketplace and mobile banking to agricultural coops. Check out the [[wiki|http://github.com/dannycastonguay/smartcoops/wiki]] to learn more.
+We bring a marketplace and mobile banking to agricultural coops. Check out the wiki to learn more.
+
+> http://github.com/dannycastonguay/smartcoops/wiki
 
 ## How to run the SMS Simulator
 
