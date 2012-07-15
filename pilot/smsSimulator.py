@@ -439,36 +439,37 @@ def loansMenu(farmer):
         smsPrint("Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
         loansMenu(farmer)
 
-def purchaseInput(farmer, cropInput):
-        name, price, units = cropInput["productName"], cropInput["price"], cropInput["units"]
-        reply = "Are you interested in buying "+name+" for the price of "
-        reply += phPesos(price)+" per "+units+"? (yes or no)"
+def purchaseInput(farmer, likelyInputs):
+    name, price, units = likelyInputs["productName"], likelyInputs["price"], likelyInputs["units"]
+    reply = "Are you interested in buying "+name+" for the price of "
+    reply += phPesos(price)+" per "+units+"? (yes or no)"
+    smsPrint(reply)
+    if affirmative(getSMS()):
+        reply = "How many units of "+name+" (e.g. 5) do you want to buy for the price of "
+        reply += phPesos(price)+" per "+units+"?"
         smsPrint(reply)
-        if affirmative(getSMS()):
-            reply = "How many units of "+name+" (e.g. 5) do you want to buy for the price of "
-            reply += phPesos(price)+" per "+units+"?"
-            smsPrint(reply)
-            ans = getSMS()
-            try:
-                quantity = int(ans)
-                amount = quantity*price
-                if 0 <= amount and amount <= farmer.getSavingsBal():
-                    farmer.savingsWithdraw(amount)
-                    cropInput["purchaseDate"] = datetime.now().strftime("%a, %b %d at %I:%M%p")
-                    cropInput["quantity"], cropInput["amount"] = quantity, amount
-                    farmer.add2PurchaseHist(cropInput)
-                    reply = "You have purchased "+str(quantity) + " units of " + units + " of "
-                    reply += name + " for the total amount of " + phPesos(amount)
-                    reply += ". Your new savings account balance is " + phPesos(farmer.getSavingsBal()) + "."
-                    smsPrint(reply)
-                else:
-                    reply = "Cannot proceed with purchase, total amount for purchase is " + phPesos(amount)
-                    reply += " but should be between P0.00 and " + phPesos(farmer.getSavingsBal()) 
-                    reply += " (your current savings bal)."
-                    smsPrint(reply)
-            except ValueError:
-                smsPrint("Please reply with a whole number. Your reply: '" + ans + "' is not valid")
-                purchaseInput(farmer, cropInput)
+        ans = getSMS()
+        try:
+            quantity = int(ans)
+            amount = quantity*price
+            if 0 <= amount and amount <= farmer.getSavingsBal():
+                farmer.savingsWithdraw(amount)
+                pHist = likelyInputs.copy()
+                pHist["purchaseDate"] = datetime.now().strftime("%a, %b %d at %I:%M%p")
+                pHist["quantity"], pHist["amount"] = quantity, amount
+                farmer.add2PurchaseHist(pHist)
+                reply = "You have purchased "+str(quantity) + " units of " + units + " of "
+                reply += name + " for the total amount of " + phPesos(amount)
+                reply += ". Your new savings account balance is " + phPesos(farmer.getSavingsBal()) + "."
+                smsPrint(reply)
+            else:
+                reply = "Cannot proceed with purchase, total amount for purchase is " + phPesos(amount)
+                reply += " but should be between P0.00 and " + phPesos(farmer.getSavingsBal()) 
+                reply += " (your current savings bal)."
+                smsPrint(reply)
+        except ValueError:
+            smsPrint("Please reply with a whole number. Your reply: '" + ans + "' is not valid")
+            purchaseInput(farmer, likelyInputs)
 
 def buyInputMenu(farmer, crop):
     randomInput = random.choice(cropInputs)
@@ -493,35 +494,41 @@ def inputsMenu(farmer):
     for c in farmer.getCrops():
         optionsList += [c["name"] + " inputs"]
     optionsStr = makeListStr(["Search all products"] + optionsList + ["Main menu"])
-    confirmation = 'no'
-    while not affirmative(confirmation):
-        reply = "Buy inputs menu. You currently have "+phPesos(farmer.getSavingsBal())
-        reply += " in your savings account. What would you like to buy: "+optionsStr
-        smsPrint(reply)
-        ans = getSMS()
-        try:
-            if int(ans) > len(farmer.getCrops())+1: #+1 bcz 'View all products' is first option
-                confirmation = 'yes'
-            elif ans == '1':
-                buyInputMenu(farmer,'all products')
-            else:
-                buyInputMenu(farmer,farmer.getCrops()[int(ans)-2]['name']) #-2 because of 'View all products' option
-        except ValueError:
-            smsPrint("Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
+    reply = "Buy inputs menu. You currently have "+phPesos(farmer.getSavingsBal())
+    reply += " in your savings account. What would you like to buy: "+optionsStr
+    smsPrint(reply)
+    ans = getSMS()
+    try:
+        if int(ans) <= 0:
+            raise ValueError
+        elif int(ans) == 1:
+            buyInputMenu(farmer,'all products')
+        elif int(ans) > len(farmer.getCrops())+1: #+1 bcz 'View all products' is first option
+            return #go back to main menu
+        else:
+            buyInputMenu(farmer,farmer.getCrops()[int(ans)-2]['name']) #-2 because of 'View all products' option
+    except ValueError:
+        smsPrint("Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
+        inputsMenu(farmer)
 
 def harvestMenu(farmer):
-    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
+    cropNameList = []
+    for c in crops:
+        cropNameList.append(c['name'])
+    reply = "Select the crop you are interested in selling: " + makeListStr(cropNameList)
+    smsPrint(reply)
     smsPrint("This menu is not complete yet... Returning to main menu")
 
 def adviceMenu(farmer):
     optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
     smsPrint("This menu is not complete yet... Returning to main menu")
 
-def printPurchaseHist(farmer):
+def purchaseHist(farmer):
+    reply = ''
     for p in farmer.getPurchaseHist():
         reply = "On " + p['purchaseDate'] + " you bought " + str(p['quantity']) + p['units']
-        reply += " of " + p['productName'] + " at " + phPesos(p['price']) + " for a total of " + phPesos(p['amount']) + "."
-        smsPrint(reply)
+        reply += " of " + p['productName'] + " at " + phPesos(p['price']) + " for a total of " + phPesos(p['amount']) + ".\n"
+    smsPrint(reply)
 
 def changeName(farmer):
     farmer.setName(getName())
@@ -547,7 +554,7 @@ def farmerProfileMenu(farmer):
     ans = getSMS()
     try:
         if int(ans) in range(1,5):
-            {1:printPurchaseHist,2:changeName,3:changeCoop,4:changeCrops}[int(ans)](farmer)
+            {1:purchaseHist,2:changeName,3:changeCoop,4:changeCrops}[int(ans)](farmer)
         elif int(ans) == 5:
             return
         else:
@@ -555,6 +562,12 @@ def farmerProfileMenu(farmer):
     except ValueError:
         smsPrint("Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
         farmerProfileMenu(farmer)
+
+def shortCommands(farmer):
+    reply = "Which command would you like to learn more information about: "
+    reply += makeListStr(['Product charge invoice','article delivery receipt','official receipt',
+                              'cash voucher','commodity slip','stock cards','ledger'])
+    smsPrint(reply)
 
 def contactSCMenu(farmer):
     reply = "Hello. Please explain briefly your reason for contacting us. "
@@ -566,15 +579,16 @@ def contactSCMenu(farmer):
     smsPrint(reply)
 
 def mainMenu(farmer):
-    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
+    optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices',
+                              'View my profile','View shortcut commands','Contact SMART Coops'])
     while True:
         smsPrint("SMART Coops main menu. What would you like to do: "+optionsStr)
         ans = getSMS()
         try:
-            {1:loansMenu,2:inputsMenu,3:harvestMenu,4:adviceMenu,5:farmerProfileMenu,6:contactSCMenu}[int(ans)](farmer)
+            {1:loansMenu,2:inputsMenu,3:harvestMenu,4:adviceMenu,5:farmerProfileMenu,
+             6:shortCommands,7:contactSCMenu}[int(ans)](farmer)
         except ValueError:
             smsPrint("Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
-    
 
 class Usage(Exception):
     def __init__(self, msg):
@@ -582,7 +596,6 @@ class Usage(Exception):
 
 def main(argv=None):
     """ As suggested in http://www.artima.com/weblogs/viewpost.jsp?thread=4829 """
-
     if argv is None:
         argv = sys.argv
     try:
@@ -591,11 +604,10 @@ def main(argv=None):
         except getopt.error, msg:
              raise Usage(msg)
         mainMenu(firstTime())
-        
     except Usage, err:
         print >>sys.stderr, err.msg
         print >>sys.stderr, "for help use --help"
         return 2
-
 if __name__ == "__main__":
     sys.exit(main())
+
