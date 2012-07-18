@@ -514,11 +514,18 @@ def inputsMenu(farmer):
 
 def harvestMenu(farmer):
     cropNameList = []
-    for c in crops:
+    for c in farmer.getCrops():
         cropNameList.append(c['name'])
     reply = "Select the crop you are interested in selling: " + makeListStr(cropNameList)
     smsPrint(reply)
-    smsPrint("This menu is not complete yet... Returning to main menu")
+    ans = getSMS()
+    try:
+        if int(ans) <= len(farmer.getCrops()):
+            reply = "The current price for " + cropsfarmer.getCrops()[int(ans)]
+        else:
+            raise ValueError
+    except ValueError:
+        smsPrint("Please reply with a numeric value. Your reply: '" + ans + "' is not one of the menu options")
 
 def adviceMenu(farmer):
     optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices','View my profile','Contact SMART Coops'])
