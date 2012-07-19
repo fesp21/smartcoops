@@ -1,4 +1,4 @@
-# Django settings for scdjango project.
+# Django settings for SMART Coops project.
 
 import dj_database_url
 
