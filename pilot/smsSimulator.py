@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import re, csv, time, random, getopt, sys, locale
 from datetime import datetime
 import philippinesData, cropInputsData
