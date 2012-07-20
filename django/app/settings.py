@@ -1,6 +1,6 @@
 # Django settings for SMART Coops project.
 
-import dj_database_url
+import dj_database_url, django_extensions
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'bookkeeper',
+    'django_extensions', 
 )
 
 # A sample logging configuration. The only tangible logging
