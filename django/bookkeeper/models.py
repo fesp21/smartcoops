@@ -26,10 +26,10 @@ class StreetBarangay(models.Model):
 
 class Person(models.Model):
     name = models.CharField(max_length=200)
-    contactTelNum = models.CharField(max_length=200)
-    contactMobileNum = models.CharField(max_length=200)
-    contactEmail = models.EmailField()
-    dateOfBirth = models.DateField()
+    contactTelNum = models.CharField("Telephone",max_length=200)
+    contactMobileNum = models.CharField("Mobile",max_length=200)
+    contactEmail = models.EmailField("Email")
+    dateOfBirth = models.DateField("Date of birth")
     def __unicode__(self):
         return self.name
 
