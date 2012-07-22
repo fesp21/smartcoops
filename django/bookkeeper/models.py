@@ -9,13 +9,13 @@ class MunicipalityCity(models.Model):
     name = models.CharField(max_length=100)
     province = models.ForeignKey(Province)
     def __unicode__(self):
-        return self.name
+        return self.name + ", " + self.province.name
 
 class GPSCoord(models.Model):
     longitude = models.DecimalField(max_digits=20,decimal_places=6)
     latitude = models.DecimalField(max_digits=20,decimal_places=6)
     def __unicode__(self):
-        return str(self.longitude)+"-"+str(self.latitude)
+        return "("+str(self.longitude)+", "+str(self.latitude)+")"
 
 class StreetBarangay(models.Model):
     name = models.CharField(max_length=100)
@@ -111,13 +111,13 @@ class Cultivation(models.Model):
     hectare = models.DecimalField(max_digits=20,decimal_places=2)
     farmer = models.ForeignKey(Farmer)
     def __unicode__(self):
-        return self.crop.name
+        return self.farmer.name + ": " + self.crop.name + " (" + str(self.hectare) + " hectares)"
 
 class Purchase(models.Model):
     purchaseDate = models.DateTimeField('Purchase date')
     farmer = models.ForeignKey(Farmer)
     def __unicode__(self):
-        return "Purchase by " + self.farmer.person.name 
+        return "Purchase by " + self.farmer.name + " on " + str(self.purchaseDate)
 
 class PurchasedItem(models.Model):
     quantity = models.DecimalField(max_digits=20,decimal_places=2)
@@ -125,4 +125,5 @@ class PurchasedItem(models.Model):
     price = models.DecimalField(max_digits=20,decimal_places=2)
     purchase = models.ForeignKey(Purchase)
     def __unicode__(self):
-        return purchase.farmer.name + " purchased " + str(quantity) + " units of " + item.name + " for a price of " + str(price)
+        return self.purchase.farmer.name + " purchased " + str(self.quantity) + " units of " + self.item.name + " for a price of " + str(self.price)
+        
