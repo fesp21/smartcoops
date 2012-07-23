@@ -1,0 +1,9 @@
+{% if farmerList %}
+    <ul>
+    {% for f in farmerList %}
+        <li><a href="/farmer/{{ f.id }}/">{{ f.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No farmers are registered.</p>
+{% endif %}
