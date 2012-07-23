@@ -30,6 +30,7 @@ class Person(models.Model):
     contactMobileNum = models.CharField("Mobile",max_length=200)
     contactEmail = models.EmailField("Email")
     dateOfBirth = models.DateField("Date of birth")
+    #    address = models.TextField()
     def __unicode__(self):
         return self.name
 
