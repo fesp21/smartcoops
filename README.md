@@ -21,18 +21,22 @@ There are currently two parts to this project. One is a Django web app that depl
 ## Installation
 
 1. Install Python 2.5 or above (not Python 3.X unfortunately, since django does not support 3.X yet)
-1. Install [[git|http://git-scm.com/downloads]]
+1. Install [git](http://git-scm.com/downloads)
 1. Go to the folder where you want to code (in my examples, I type `cd ~/antportal/`)
 1. `git clone git@github.com:dannycastonguay/smartcoops.git`
 2. `curl -O https://raw.github.com/pypa/virtualenv/master/virtualenv.py`
 1. `python virtualenv.py scenv`  
 1. `source ~/antportal/scenv/bin/activate`
 1. `pip install django`
+1. `pip install dj-database-url`
+1. `pip install django-extensions`
 
 To run the smsSimulator: 
+
 1. `python ~/antportal/smartcoops/pilot/smsSimulator.py`
 
 To run the django app
+
 1. `python ~/antportal/smartcoops/django manage.py syncdb`
 1. `python ~/antportal/smartcoops/django manage.py runserver`
 
