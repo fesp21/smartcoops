@@ -30,9 +30,10 @@ There are currently two parts to this project. One is a Django web app that depl
 1. `python ~/antportal/smartcoops/django manage.py syncdb`
 1. `python ~/antportal/smartcoops/django manage.py runserver`
 
+### Run the django app on heroku
 
-
-
+1. Install postgre (to be able to run locally) http://stackoverflow.com/questions/846383/problem-installing-pyscopg2-on-mac-os-x
+1. Follow instructions at https://devcenter.heroku.com/articles/django
 
 ## Copyright
 
