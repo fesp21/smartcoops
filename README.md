@@ -4,16 +4,6 @@ We bring a marketplace and mobile banking to agricultural coops. Check out the w
 
 > http://github.com/dannycastonguay/smartcoops/wiki
 
-## How to run the SMS Simulator
-
-Assuming you are in a posix environment (linux, macos) and that you have cloned this project to your system.
-
-> `% cd PATH-TO-PROJECT-DIR`
-
-> `% cd pilot`
-
-> `% python smsSimulator.py`
-
 ## Manifest
 
 There are currently two parts to this project. One is a Django web app that deploys to Heroku, and the other is a Python command line simulator for farmer interactions with the yet to be built SMS server.
@@ -31,11 +21,11 @@ There are currently two parts to this project. One is a Django web app that depl
 1. `pip install dj-database-url`
 1. `pip install django-extensions`
 
-To run the smsSimulator: 
+### Run the smsSimulator: 
 
 1. `python ~/antportal/smartcoops/pilot/smsSimulator.py`
 
-To run the django app
+### Run the django app
 
 1. `python ~/antportal/smartcoops/django manage.py syncdb`
 1. `python ~/antportal/smartcoops/django manage.py runserver`
