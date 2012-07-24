@@ -21,7 +21,7 @@ There are currently two parts to this project. One is a Django web app that depl
 1. `pip install dj-database-url`
 1. `pip install django-extensions`
 
-### Run the smsSimulator: 
+### Run the smsSimulator
 
 1. `python ~/antportal/smartcoops/pilot/smsSimulator.py`
 
