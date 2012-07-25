@@ -3,9 +3,9 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'smstweet.views.show', name='home'),
+    url(r'^$', 'bookkeeper.views.show', name='home'),
     url(r'^bookkeeper/', include('bookkeeper.urls')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^process/', 'smstweet.views.process'),
+    url(r'^process/', 'bookkeeper.views.process'),
     )
