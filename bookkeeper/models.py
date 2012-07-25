@@ -19,8 +19,8 @@ class GPSCoord(models.Model):
 
 class StreetBarangay(models.Model):
     name = models.CharField("Street or barangay", max_length=100)
-    municipalityCity = models.ForeignKey(MunicipalityCity)
-    gpsCoord = models.OneToOneField(GPSCoord)
+    municipalityCity = models.ForeignKey("Municipality or city", MunicipalityCity)
+    gpsCoord = models.OneToOneField("GPS Coordinates", GPSCoord)
     def __unicode__(self):
         return self.name
 
@@ -57,11 +57,11 @@ class Coop(models.Model):
 	(U'Transport','Transport'),
         )
     coopType = models.CharField("Type of cooperative", max_length=50, choices=COOP_TYPE_CHOICES)
-    streetBarangay = models.ForeignKey(StreetBarangay) #municipalityCity and province can be infered from streetBarangay
+    streetBarangay = models.ForeignKey("Street or barangay", StreetBarangay) #municipalityCity and province can be infered from streetBarangay
     bodMale = models.PositiveIntegerField("BOD Male")
     bodFemale = models.PositiveIntegerField("BOD Female")
-    membesMale = models.PositiveIntegerField("Male members")
-    membesFemale = models.PositiveIntegerField("Female members")
+    membesMale = models.PositiveIntegerField("Number of male members")
+    membesFemale = models.PositiveIntegerField("Number of female members")
     numMembers = models.PositiveIntegerField("Number of members") #could be computed
     totalAssets = models.DecimalField("Total assets", max_digits=20,decimal_places=2)
     commonAuthorized = models.DecimalField("Common authorized assets", max_digits=20,decimal_places=2)
@@ -71,7 +71,7 @@ class Coop(models.Model):
     commonPaidUp = models.DecimalField("Common paid up assets", max_digits=20,decimal_places=2)
     preferredPaidUp = models.DecimalField("Preferred paid up assets", max_digits=20,decimal_places=2)
     birTin = models.TextField("BIR TIN")
-    contactPerson = models.ForeignKey(Person)
+    contactPerson = models.ForeignKey("Contact person", Person)
     def __unicode__(self):
         return self.name
 
@@ -100,7 +100,7 @@ class CropInput(Item):
     recommendedUsage = models.TextField("Recommended Usage")
 
 class Crop(Item):
-    cropInputs = models.ManyToManyField(CropInput)
+    cropInputs = models.ManyToManyField("Crop inputs", CropInput)
 
 class Farmer(Person):
     coop = models.ForeignKey(Coop) #could farmers be part of more than one coop?
