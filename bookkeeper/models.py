@@ -20,7 +20,7 @@ class GPSCoord(models.Model):
 class StreetBarangay(models.Model):
     name = models.CharField("Street or barangay", max_length=100)
     municipalityCity = models.ForeignKey(MunicipalityCity)
-    gpsCoord = models.OneToOneField("GPS Coordinates", GPSCoord)
+    gpsCoord = models.OneToOneField(GPSCoord)
     def __unicode__(self):
         return self.name
 
