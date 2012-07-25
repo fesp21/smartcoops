@@ -113,14 +113,14 @@ try:
         # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     )
     
-    ROOT_URLCONF = 'sc.urls'
+    ROOT_URLCONF = 'farmbook.urls'
     
     # Python dotted path to the WSGI application used by Django's runserver.
-    WSGI_APPLICATION = 'sc.wsgi.application'
+    WSGI_APPLICATION = 'farmbook.wsgi.application'
     
     TEMPLATE_DIRS = (
-        "/home/html/smartcoops/django/templates",
-        "/Users/danny/antportal/scenv/smartcoops/django/templates"
+        "/home/html/smartcoops/templates",
+        "/Users/danny/antportal/scenv/smartcoops/templates"
         # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
         # Always use forward slashes, even on Windows.
         # Don't forget to use absolute paths, not relative paths.
