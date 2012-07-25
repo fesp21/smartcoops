@@ -51,3 +51,5 @@ class PurchaseAdmin(admin.ModelAdmin):
 
 admin.site.register(Purchase, PurchaseAdmin)
 admin.site.register(PurchasedItem)
+
+admin.site.register(IncomingText)

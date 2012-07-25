@@ -1,6 +1,9 @@
 # Django settings for SMART Coops project.
 
 import dj_database_url, django_extensions
+import os
+
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 try:
     DEBUG = True
@@ -83,6 +86,7 @@ try:
         # Put strings here, like "/home/html/static" or "C:/www/django/static".
         # Always use forward slashes, even on Windows.
         # Don't forget to use absolute paths, not relative paths.
+        os.path.join(PROJECT_PATH, 'static'),
     )
     
     # List of finder classes that know how to find static files in
@@ -119,6 +123,7 @@ try:
     WSGI_APPLICATION = 'farmbook.wsgi.application'
     
     TEMPLATE_DIRS = (
+        os.path.join(PROJECT_PATH, 'templates'),
         "/home/html/smartcoops/templates",
         "/Users/danny/antportal/scenv/smartcoops/templates"
         # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
