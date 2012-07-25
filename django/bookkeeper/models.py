@@ -1,31 +1,31 @@
 from django.db import models
 
 class Province(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField("Province", max_length=100)
     def __unicode__(self):
         return self.name
 
 class MunicipalityCity(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField("Municipality or city", max_length=100)
     province = models.ForeignKey(Province)
     def __unicode__(self):
         return self.name + ", " + self.province.name
 
 class GPSCoord(models.Model):
-    longitude = models.DecimalField(max_digits=20,decimal_places=6)
-    latitude = models.DecimalField(max_digits=20,decimal_places=6)
+    longitude = models.DecimalField("GPS longitude", max_digits=20,decimal_places=6)
+    latitude = models.DecimalField("GPS latitude", max_digits=20,decimal_places=6)
     def __unicode__(self):
         return "("+str(self.longitude)+", "+str(self.latitude)+")"
 
 class StreetBarangay(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField("Street or barangay", max_length=100)
     municipalityCity = models.ForeignKey(MunicipalityCity)
     gpsCoord = models.OneToOneField(GPSCoord)
     def __unicode__(self):
         return self.name
 
 class Person(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField("Name", max_length=200)
     contactTelNum = models.CharField("Telephone",max_length=200)
     contactMobileNum = models.CharField("Mobile",max_length=200)
     contactEmail = models.EmailField("Email")
@@ -35,14 +35,14 @@ class Person(models.Model):
         return self.name
 
 class Coop(models.Model):
-    coopId = models.PositiveIntegerField()
-    registrationNum = models.SlugField(max_length=20)
-    registrationDate = models.DateField('Date registered')
-    oldRegistrationNumber = models.CharField(max_length=20)
-    oldRegistrationDate = models.DateField('Old date registered')
-    name = models.CharField(max_length=200)
+    coopId = models.PositiveIntegerField("Coop ID number")
+    registrationNum = models.SlugField("Registration number", max_length=20)
+    registrationDate = models.DateField('Date of registration')
+    oldRegistrationNumber = models.CharField("Old registration number", max_length=20)
+    oldRegistrationDate = models.DateField('Old registration date')
+    name = models.CharField("Cooperative name", max_length=200)
     CATEGORY_CHOICES = ((u'Primary',u'Primary'),(u'Secondary',u'Secondary'))
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    category = models.CharField("Category", max_length=50, choices=CATEGORY_CHOICES)
     COOP_TYPE_CHOICES = (
         (u'Credit','Credit'),
 	(U'Multi-Purpose','Multi-Purpose'),
@@ -56,36 +56,36 @@ class Coop(models.Model):
 	(U'Union-Secondary','Union-Secondary'),
 	(U'Transport','Transport'),
         )
-    coopType = models.CharField(max_length=50, choices=COOP_TYPE_CHOICES)
+    coopType = models.CharField("Type of cooperative", max_length=50, choices=COOP_TYPE_CHOICES)
     streetBarangay = models.ForeignKey(StreetBarangay) #municipalityCity and province can be infered from streetBarangay
-    bodMale = models.PositiveIntegerField()
-    bodFemale = models.PositiveIntegerField()
-    membesMale = models.PositiveIntegerField()
-    membesFemale = models.PositiveIntegerField()
-    numMembers = models.PositiveIntegerField() #could be computed
-    totalAssets = models.DecimalField(max_digits=20,decimal_places=2)
-    commonAuthorized = models.DecimalField(max_digits=20,decimal_places=2)
-    preferredAuthorized = models.DecimalField(max_digits=20,decimal_places=2)
-    commonSubscribed = models.DecimalField(max_digits=20,decimal_places=2)
-    preferredSubscribed = models.DecimalField(max_digits=20,decimal_places=2)
-    commonPaidUp = models.DecimalField(max_digits=20,decimal_places=2)
-    preferredPaidUp = models.DecimalField(max_digits=20,decimal_places=2)
-    birTin = models.TextField()
+    bodMale = models.PositiveIntegerField("BOD Male")
+    bodFemale = models.PositiveIntegerField("BOD Female")
+    membesMale = models.PositiveIntegerField("Male members")
+    membesFemale = models.PositiveIntegerField("Female members")
+    numMembers = models.PositiveIntegerField("Number of members") #could be computed
+    totalAssets = models.DecimalField("Total assets", max_digits=20,decimal_places=2)
+    commonAuthorized = models.DecimalField("Common authorized assets", max_digits=20,decimal_places=2)
+    preferredAuthorized = models.DecimalField("Preferred authorized assets", max_digits=20,decimal_places=2)
+    commonSubscribed = models.DecimalField("Common subscribed assets", max_digits=20,decimal_places=2)
+    preferredSubscribed = models.DecimalField("Preferred subscribed assets", max_digits=20,decimal_places=2)
+    commonPaidUp = models.DecimalField("Common paid up assets", max_digits=20,decimal_places=2)
+    preferredPaidUp = models.DecimalField("Preferred paid up assets", max_digits=20,decimal_places=2)
+    birTin = models.TextField("BIR TIN")
     contactPerson = models.ForeignKey(Person)
     def __unicode__(self):
         return self.name
 
 class Item(models.Model):
-    name = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=20,decimal_places=2)
+    name = models.CharField("Item", max_length=200)
+    price = models.DecimalField("Price", max_digits=20,decimal_places=2)
     def __unicode__(self):
         return self.name
 
 class CropInput(Item):
-    manufacturer = models.CharField(max_length=200)
-    activeIngredients = models.TextField()
-    brand = models.CharField(max_length=200)
-    units = models.CharField(max_length=50)
+    manufacturer = models.CharField("Manufacturer", max_length=200)
+    activeIngredients = models.TextField("Active ingredients")
+    brand = models.CharField("Brand", max_length=200)
+    units = models.CharField("Units", max_length=50)
     CATEGORY_CHOICES = (
         (U'Fertilizer','Fertilizer'),
         (U'Fungicides','Fungicides'),
@@ -96,34 +96,34 @@ class CropInput(Item):
         (u'Seed treatment','Seed treatment'),
         (U'Seeds','Seeds'),
         )
-    category =  models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-    recommendedUsage = models.TextField()
+    category =  models.CharField("Category", max_length=50, choices=CATEGORY_CHOICES)
+    recommendedUsage = models.TextField("Recommended Usage")
 
 class Crop(Item):
     cropInputs = models.ManyToManyField(CropInput)
 
 class Farmer(Person):
     coop = models.ForeignKey(Coop) #could farmers be part of more than one coop?
-    loanBalance = models.DecimalField(max_digits=20,decimal_places=2)
-    savingsBalance = models.DecimalField(max_digits=20,decimal_places=2)
+    loanBalance = models.DecimalField("Loan balance", max_digits=20,decimal_places=2)
+    savingsBalance = models.DecimalField("Savings balance", max_digits=20,decimal_places=2)
 
 class Cultivation(models.Model):
     crop = models.ForeignKey(Crop)
-    hectare = models.DecimalField(max_digits=20,decimal_places=2)
+    hectare = models.DecimalField("Number of hectares", max_digits=20,decimal_places=2)
     farmer = models.ForeignKey(Farmer)
     def __unicode__(self):
         return self.farmer.name + ": " + self.crop.name + " (" + str(self.hectare) + " hectares)"
 
 class Purchase(models.Model):
-    purchaseDate = models.DateTimeField('Purchase date')
+    purchaseDate = models.DateTimeField('Date of purchase')
     farmer = models.ForeignKey(Farmer)
     def __unicode__(self):
         return "Purchase by " + self.farmer.name + " on " + str(self.purchaseDate)
 
 class PurchasedItem(models.Model):
-    quantity = models.DecimalField(max_digits=20,decimal_places=2)
+    quantity = models.DecimalField("Quantity", max_digits=20,decimal_places=2)
     item = models.ForeignKey(Item)
-    price = models.DecimalField(max_digits=20,decimal_places=2)
+    price = models.DecimalField("Price", max_digits=20,decimal_places=2)
     purchase = models.ForeignKey(Purchase)
     def __unicode__(self):
         return self.purchase.farmer.name + " purchased " + str(self.quantity) + " units of " + self.item.name + " for a price of " + str(self.price)
