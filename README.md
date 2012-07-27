@@ -30,7 +30,7 @@ There are currently two parts to this project. One is a Django web app that depl
 
 ### Run the django app on heroku
 
-1. Follow instructions at https://devcenter.heroku.com/articles/django
+1. Follow instructions from the [dev center of Heroku](https://devcenter.heroku.com/articles/django)
 1. (Under macos) You might run into trouble with the installation of postgre, if so this [article might help you](http://stackoverflow.com/questions/846383/problem-installing-pyscopg2-on-mac-os-x)
 
 ## Copyright
