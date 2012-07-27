@@ -1,7 +1,6 @@
 from farmbook.models import *
 from django.contrib import admin
-
-
+from django.db import models
 
 admin.site.register(Province)
 admin.site.register(MunicipalityCity)
@@ -10,14 +9,6 @@ admin.site.register(StreetBarangay)
 admin.site.register(Person)
 admin.site.register(Coop)
 admin.site.register(Item)
-
-#class CropInputAdmin(admin.ModelAdmin):
-#    fieldsets = [
-#        (None,               {'fields': ['category']}),
-#        ('Date information', {'fields': ['name'], 'classes': ['collapse']}),
-#        ]
-#    fields = ['name','category'] #could be used to reorganize fields
-
 admin.site.register(CropInput)
 admin.site.register(Crop)
 

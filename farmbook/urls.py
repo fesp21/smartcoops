@@ -4,7 +4,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     #url(r'^$', 'index'),
-    url(r'^$', 'views.show', name='home'),
+    url(r'^$', 'farmbook.views.show', name='home'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^process/', 'views.process'),
+    url(r'^process/', 'farmbook.views.process'),
+    url(r'^update/', 'farmbook.views.update'),
     )

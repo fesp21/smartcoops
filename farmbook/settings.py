@@ -124,8 +124,7 @@ try:
     
     TEMPLATE_DIRS = (
         os.path.join(PROJECT_PATH, 'templates'),
-        "/home/html/smartcoops/templates",
-        "/Users/danny/antportal/scenv/smartcoops/templates"
+
         # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
         # Always use forward slashes, even on Windows.
         # Don't forget to use absolute paths, not relative paths.
@@ -141,6 +140,7 @@ try:
         'django.contrib.admin',
         'django.contrib.admindocs',
         'django_extensions', 
+        'farmbook',
     )
     
     # A sample logging configuration. The only tangible logging
