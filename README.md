@@ -1,8 +1,6 @@
 # smartcoops
 
-We bring a marketplace and mobile banking to agricultural coops. Check out the wiki to learn more.
-
-> http://github.com/dannycastonguay/smartcoops/wiki
+We bring a marketplace and mobile banking to agricultural coops. Check out the [wiki to learn more](http://github.com/dannycastonguay/smartcoops/wiki)
 
 ## Manifest
 
@@ -32,10 +30,10 @@ There are currently two parts to this project. One is a Django web app that depl
 
 ### Run the django app on heroku
 
-1. Install postgre (to be able to run locally) http://stackoverflow.com/questions/846383/problem-installing-pyscopg2-on-mac-os-x
 1. Follow instructions at https://devcenter.heroku.com/articles/django
+1. (Under macos) You might run into trouble with the installation of postgre, if so this [article might help you](http://stackoverflow.com/questions/846383/problem-installing-pyscopg2-on-mac-os-x)
 
 ## Copyright
 
-For the time being, all rights reserved to AntPortal Corp of Canada.
+For the time being, all rights reserved to [AntPortal Corp of Canada](http://www.antportal.com).
 
