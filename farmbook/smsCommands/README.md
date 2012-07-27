@@ -1,0 +1,1 @@
+A current limitation of the views.py is that it requires that the function only have lower case letters. Eventually this could be fixed by fetching all the function names and regex matching the command with the function names and calling the matched function by its name. Not yet implemented.

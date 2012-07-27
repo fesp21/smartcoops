@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from xml.dom import minidom
 import datetime
+import re
 
 from django.shortcuts import render_to_response
 
@@ -22,6 +23,11 @@ def updateIncomingText(entry):
                     msg = entry['msg'],
                     udh = entry['udh'])
     new.save()
+    pattern = re.compile(r'^.*[ /]', re.IGNORECASE)
+    smsCommand = re.search(pattern,msg)
+    m = __import__ ('smsCommands.'+smsCommand.group())
+    func = getattr(m,smsCommand)
+    func(entry)
 
 @csrf_exempt
 def process(request):
