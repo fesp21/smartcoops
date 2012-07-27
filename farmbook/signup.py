@@ -29,7 +29,7 @@
 <option value="" selected="selected">---------</option>
 <option value="1">San Benito</option>
 <option value="2">Seed Growers Cooperative of Laguna</option>
-</select><a href="/admin/bookkeeper/coop/add/" class="add-another" id="add_id_coop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
+</select><a href="/admin/farmbook/coop/add/" class="add-another" id="add_id_coop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
 </div>
 </div>
 </fieldset>
@@ -93,7 +93,7 @@ id="cultivation_set-0">
 <select name="cultivation_set-0-crop" id="id_cultivation_set-0-crop">
 <option value="" selected="selected">---------</option>
 <option value="2">Rice</option>
-</select><a href="/admin/bookkeeper/crop/add/" class="add-another" id="add_id_cultivation_set-0-crop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
+</select><a href="/admin/farmbook/crop/add/" class="add-another" id="add_id_cultivation_set-0-crop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
 </td>
 <td class="field-hectare">
 <input type="text" name="cultivation_set-0-hectare" id="id_cultivation_set-0-hectare" />
@@ -110,7 +110,7 @@ id="cultivation_set-1">
 <select name="cultivation_set-1-crop" id="id_cultivation_set-1-crop">
 <option value="" selected="selected">---------</option>
 <option value="2">Rice</option>
-</select><a href="/admin/bookkeeper/crop/add/" class="add-another" id="add_id_cultivation_set-1-crop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
+</select><a href="/admin/farmbook/crop/add/" class="add-another" id="add_id_cultivation_set-1-crop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
 </td>
 <td class="field-hectare">
 <input type="text" name="cultivation_set-1-hectare" id="id_cultivation_set-1-hectare" />
@@ -127,7 +127,7 @@ id="cultivation_set-2">
 <select name="cultivation_set-2-crop" id="id_cultivation_set-2-crop">
 <option value="" selected="selected">---------</option>
 <option value="2">Rice</option>
-</select><a href="/admin/bookkeeper/crop/add/" class="add-another" id="add_id_cultivation_set-2-crop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
+</select><a href="/admin/farmbook/crop/add/" class="add-another" id="add_id_cultivation_set-2-crop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
 </td>
 <td class="field-hectare">
 <input type="text" name="cultivation_set-2-hectare" id="id_cultivation_set-2-hectare" />
@@ -144,7 +144,7 @@ id="cultivation_set-empty">
 <select name="cultivation_set-__prefix__-crop" id="id_cultivation_set-__prefix__-crop">
 <option value="" selected="selected">---------</option>
 <option value="2">Rice</option>
-</select><a href="/admin/bookkeeper/crop/add/" class="add-another" id="add_id_cultivation_set-__prefix__-crop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
+</select><a href="/admin/farmbook/crop/add/" class="add-another" id="add_id_cultivation_set-__prefix__-crop" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
 </td>
 <td class="field-hectare">
 <input type="text" name="cultivation_set-__prefix__-hectare" id="id_cultivation_set-__prefix__-hectare" />

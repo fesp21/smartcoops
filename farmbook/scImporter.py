@@ -1,4 +1,4 @@
-from bookkeeper.models import Coop
+from farmbook.models import Coop
 
 file = open('coops.txt')
 

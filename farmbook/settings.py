@@ -140,7 +140,6 @@ try:
         'django.contrib.staticfiles',
         'django.contrib.admin',
         'django.contrib.admindocs',
-        'bookkeeper',
         'django_extensions', 
     )
     

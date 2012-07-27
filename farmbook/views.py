@@ -8,11 +8,11 @@ from django.shortcuts import render_to_response
 
 
 import datetime
-from bookkeeper.models import *
+from farmbook.models import *
 
 def index(request):
     farmerList = Farmer.objects.all()
-    return render_to_response('bookkeeper/index.html', {'farmerList': farmerList})
+    return render_to_response('farmbook/index.html', {'farmerList': farmerList})
 
 def updateIncomingText(entry):
     new = IncomingText(msgType = entry['messageType'],

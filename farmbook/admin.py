@@ -1,4 +1,4 @@
-from bookkeeper.models import *
+from farmbook.models import *
 from django.contrib import admin
 
 
