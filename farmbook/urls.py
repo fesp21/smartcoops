@@ -3,8 +3,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'bookkeeper.views.show', name='home'),
-    url(r'^bookkeeper/', include('bookkeeper.urls')),
+    #url(r'^$', 'index'),
+    url(r'^$', 'views.show', name='home'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^process/', 'bookkeeper.views.process'),
+    url(r'^process/', 'views.process'),
     )
