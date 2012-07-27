@@ -14,11 +14,14 @@ import pyglobe
 # presented with a webtool that you can use to define / edit your callback URL and
 # registered Globe numbers.
 
+danny = '09158668018'
+leah = '09158668019'
+
 try:
     service = pyglobe.PyGlobe(uname='5txhcoj0x',
                               pin='21738420',
-                              msisdn='09158668018')
-    service.sendSMS('First message sent by SMART Coops through Globe!')
+                              msisdn=leah)
+    service.sendSMS('Message sent by SMART Coops through Globe!')
 except (pyglobe.PyGlobeInvalidServiceException,
         pyglobe.PyGlobeInvalidURLException,
         pyglobe.PyGlobeServerFaultException) as e:
