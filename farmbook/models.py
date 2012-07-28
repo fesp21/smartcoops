@@ -35,14 +35,8 @@ class Person(models.Model):
         return self.name
 
 class Coop(models.Model):
-    coopId = models.PositiveIntegerField("Coop ID number")
-    registrationNum = models.SlugField("Registration number", max_length=20)
-    registrationDate = models.DateField('Date of registration')
-    oldRegistrationNumber = models.CharField("Old registration number", max_length=20)
-    oldRegistrationDate = models.DateField('Old registration date')
     name = models.CharField("Cooperative name", max_length=200)
-    CATEGORY_CHOICES = ((u'Primary',u'Primary'),(u'Secondary',u'Secondary'))
-    category = models.CharField("Category", max_length=50, choices=CATEGORY_CHOICES)
+    streetBarangay = models.ForeignKey(StreetBarangay) #municipalityCity and province can be infered from streetBarangay 
     COOP_TYPE_CHOICES = (
         (u'Credit','Credit'),
 	(U'Multi-Purpose','Multi-Purpose'),
@@ -57,12 +51,19 @@ class Coop(models.Model):
 	(U'Transport','Transport'),
         )
     coopType = models.CharField("Type of cooperative", max_length=50, choices=COOP_TYPE_CHOICES)
-    streetBarangay = models.ForeignKey(StreetBarangay) #municipalityCity and province can be infered from streetBarangay
+    CATEGORY_CHOICES = ((u'Primary',u'Primary'),(u'Secondary',u'Secondary'))
+    category = models.CharField("Category", max_length=50, choices=CATEGORY_CHOICES)
+    coopId = models.PositiveIntegerField("Coop ID number")
+    registrationNum = models.SlugField("Registration number", max_length=20)
+    registrationDate = models.DateField('Date of registration')
+    oldRegistrationNumber = models.CharField("Old registration number", max_length=20)
+    oldRegistrationDate = models.DateField('Old registration date')
+    contactPerson = models.ForeignKey(Person)
+    numMembers = models.PositiveIntegerField("Number of members") #could be computed
     bodMale = models.PositiveIntegerField("BOD Male")
     bodFemale = models.PositiveIntegerField("BOD Female")
     membesMale = models.PositiveIntegerField("Number of male members")
     membesFemale = models.PositiveIntegerField("Number of female members")
-    numMembers = models.PositiveIntegerField("Number of members") #could be computed
     totalAssets = models.DecimalField("Total assets", max_digits=20,decimal_places=2)
     commonAuthorized = models.DecimalField("Common authorized assets", max_digits=20,decimal_places=2)
     preferredAuthorized = models.DecimalField("Preferred authorized assets", max_digits=20,decimal_places=2)
@@ -71,7 +72,7 @@ class Coop(models.Model):
     commonPaidUp = models.DecimalField("Common paid up assets", max_digits=20,decimal_places=2)
     preferredPaidUp = models.DecimalField("Preferred paid up assets", max_digits=20,decimal_places=2)
     birTin = models.TextField("BIR TIN")
-    contactPerson = models.ForeignKey(Person)
+
     def __unicode__(self):
         return self.name
 
@@ -108,9 +109,9 @@ class Farmer(Person):
     savingsBalance = models.DecimalField("Savings balance", max_digits=20,decimal_places=2)
 
 class Cultivation(models.Model):
+    farmer = models.ForeignKey(Farmer)  
     crop = models.ForeignKey(Crop)
     hectare = models.DecimalField("Number of hectares", max_digits=20,decimal_places=2)
-    farmer = models.ForeignKey(Farmer)
     def __unicode__(self):
         return self.farmer.name + ": " + self.crop.name + " (" + str(self.hectare) + " hectares)"
 
@@ -121,14 +122,14 @@ class Purchase(models.Model):
         return "Purchase by " + self.farmer.name + " on " + str(self.purchaseDate)
 
 class PurchasedItem(models.Model):
-    quantity = models.DecimalField("Quantity", max_digits=20,decimal_places=2)
     item = models.ForeignKey(Item)
+    quantity = models.DecimalField("Quantity", max_digits=20,decimal_places=2)
     price = models.DecimalField("Price", max_digits=20,decimal_places=2)
     purchase = models.ForeignKey(Purchase)
     def __unicode__(self):
         return self.purchase.farmer.name + " purchased " + str(self.quantity) + " units of " + self.item.name + " for a price of " + str(self.price)
         
-class IncomingText(models.Model):
+class IncomingSMS(models.Model):
     msgType = models.CharField('Message Type', max_length=5)
     msgId = models.CharField('Message ID', max_length=50)
     source = models.CharField('Source', max_length=11)
@@ -136,10 +137,8 @@ class IncomingText(models.Model):
     msg = models.TextField('Message', blank=True)
     udh = models.TextField('User Data Header', blank=True)
     timestamp = models.DateTimeField('Timestamp', auto_now_add=True)
-
     def __unicode__(self):
         return u'(%s) %s' % (self.source, self.msgType)
-    
     class Meta:
         ordering = ['-timestamp']
 

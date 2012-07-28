@@ -15,22 +15,20 @@ def index(request):
     farmerList = Farmer.objects.all()
     return render_to_response('farmbook/index.html', {'farmerList': farmerList})
 
-def updateIncomingText(entry):
-    new = IncomingText(msgType = entry['messageType'],
-                    msgId = entry['id'],
-                    source = entry['source'],
-                    target = entry['target'],
-                    msg = entry['msg'],
-                    udh = entry['udh'])
+def updateIncomingSMS(entry):
+    new = IncomingSMS(
+        msgType = entry['messageType'],
+        msgId = entry['id'],
+        source = entry['source'],
+        target = entry['target'],
+        msg = entry['msg'],
+        udh = entry['udh'],
+        )
     new.save()
-    print 'saved a new sms'
-    smsCommand = re.split(' */ *',entry['msg'])[0].lower()
-    print smsCommand
-    print 'will now import smsCommands.'+smsCommand
-    m = __import__(name='farmbook.smsCommands'+smsCommand, fromlist=['farmbook', 'smsCommands'])
-    print 'import done of smsCommands.'+smsCommand
+    smsCommand = re.split(' */ *',entry['msg'])[0].lower() #issue: should search through file names in smsCommands and match the name using re.IGNORECASE - tbdone later
+    m = __import__(name='farmbook.smsCommands.'+smsCommand, 
+                   fromlist=['farmbook', 'smsCommands'])
     func = getattr(m,smsCommand)
-    print 'got the function'
     func(entry)
 
 @csrf_exempt
@@ -48,23 +46,23 @@ def process(request):
             entry[name.nodeValue] = ''
         else:
             entry[name.nodeValue] = value.nodeValue
-    updateIncomingText(entry)
+    updateIncomingSMS(entry)
     return HttpResponse()
 
 @csrf_exempt
 def update(request):
     '''
-    TODO: update method to return a list of new IncomingText
+    TODO: update method to return a list of new IncomingSMS
     entries given a specified time from POST
     '''
     if request.method != 'POST':
         raise Http404
     data = request.POST['time']
-    latest = IncomingText.objects.latest('timestamp')
+    latest = IncomingSMS.objects.latest('timestamp')
     return HttpResponse(data)
 
 def show(request):
-    text_list = IncomingText.objects.all()
+    smsList = IncomingSMS.objects.all()
     rendered = int(datetime.datetime.now().strftime('%s'))
-    return render_to_response('index.html', {'texts': text_list,
+    return render_to_response('index.html', {'texts': smsList,
             'render': rendered})
