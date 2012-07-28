@@ -23,10 +23,14 @@ def updateIncomingText(entry):
                     msg = entry['msg'],
                     udh = entry['udh'])
     new.save()
-    pattern = re.compile(r'^.*[ /]', re.IGNORECASE)
-    smsCommand = re.search(pattern,msg)
-    m = __import__ ('smsCommands.'+smsCommand.group())
+    print 'saved a new sms'
+    smsCommand = re.split(' */ *',entry['msg'])[0].lower()
+    print smsCommand
+    print 'will now import smsCommands.'+smsCommand
+    m = __import__(name='farmbook.smsCommands'+smsCommand, fromlist=['farmbook', 'smsCommands'])
+    print 'import done of smsCommands.'+smsCommand
     func = getattr(m,smsCommand)
+    print 'got the function'
     func(entry)
 
 @csrf_exempt
