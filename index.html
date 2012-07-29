@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Smartcoops by dannycastonguay</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Smartcoops</h1>
+        <p>We bring a marketplace and mobile banking to agricultural coops</p>
+
+        <p class="view"><a href="https://github.com/dannycastonguay/smartcoops">View the Project on GitHub <small>dannycastonguay/smartcoops</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/dannycastonguay/smartcoops/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/dannycastonguay/smartcoops/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/dannycastonguay/smartcoops">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>smartcoops</h1>
+
+<p>We bring a marketplace and mobile banking to agricultural coops. Check out the wiki to learn more.</p>
+
+<blockquote>
+<p><a href="http://github.com/dannycastonguay/smartcoops/wiki">http://github.com/dannycastonguay/smartcoops/wiki</a></p>
+</blockquote>
+
+<h2>Manifest</h2>
+
+<p>There are currently two parts to this project. One is a Django web app that deploys to Heroku, and the other is a Python command line simulator for farmer interactions with the yet to be built SMS server.</p>
+
+<h2>Installation</h2>
+
+<ol>
+<li>Install Python 2.5 or above (not Python 3.X unfortunately, since django does not support 3.X yet)</li>
+<li>Install <a href="http://git-scm.com/downloads">git</a>
+</li>
+<li>Go to the folder where you want to code (in my examples, I type <code>cd ~/antportal/</code>)</li>
+<li><code>git clone git@github.com:dannycastonguay/smartcoops.git</code></li>
+<li><code>curl -O https://raw.github.com/pypa/virtualenv/master/virtualenv.py</code></li>
+<li>
+<code>python virtualenv.py scenv</code><br>
+</li>
+<li><code>source ~/antportal/scenv/bin/activate</code></li>
+<li><code>pip install django</code></li>
+<li><code>pip install dj-database-url</code></li>
+<li><code>pip install django-extensions</code></li>
+</ol><h3>Run the smsSimulator</h3>
+
+<ol>
+<li><code>python ~/antportal/smartcoops/pilot/smsSimulator.py</code></li>
+</ol><h3>Run the django app</h3>
+
+<ol>
+<li><code>python ~/antportal/smartcoops/django manage.py syncdb</code></li>
+<li><code>python ~/antportal/smartcoops/django manage.py runserver</code></li>
+</ol><h3>Run the django app on heroku</h3>
+
+<ol>
+<li>Install postgre (to be able to run locally) <a href="http://stackoverflow.com/questions/846383/problem-installing-pyscopg2-on-mac-os-x">http://stackoverflow.com/questions/846383/problem-installing-pyscopg2-on-mac-os-x</a>
+</li>
+<li>Follow instructions at <a href="https://devcenter.heroku.com/articles/django">https://devcenter.heroku.com/articles/django</a>
+</li>
+</ol><h2>Copyright</h2>
+
+<p>For the time being, all rights reserved to AntPortal Corp of Canada.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/dannycastonguay">dannycastonguay</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-33656194-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
