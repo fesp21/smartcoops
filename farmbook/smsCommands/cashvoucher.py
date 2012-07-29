@@ -1,4 +1,5 @@
 import re
+from farmbook.models import *
 
 def cashvoucher(entry):
     """
@@ -30,4 +31,4 @@ def cashvoucher(entry):
         reply += "Example of a valid entry would be: "+smsCommand+"/"
         reply += farmerName+"/"+description+str(450.50)
         return reply
-    
+

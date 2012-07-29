@@ -4,6 +4,9 @@ class Province(models.Model):
     name = models.CharField("Province", max_length=100)
     def __unicode__(self):
         return self.name
+    #TODO: figure out how to ensure uniqueness of Provinces    
+    #class Meta:
+    #    unique = True
 
 class MunicipalityCity(models.Model):
     name = models.CharField("Municipality or city", max_length=100)
@@ -141,4 +144,3 @@ class IncomingSMS(models.Model):
         return u'(%s) %s' % (self.source, self.msgType)
     class Meta:
         ordering = ['-timestamp']
-
