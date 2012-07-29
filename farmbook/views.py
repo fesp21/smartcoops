@@ -23,9 +23,12 @@ def updateIncomingSMS(entry):
         target = entry['target'],
         msg = entry['msg'],
         udh = entry['udh'],
+        timestamp = datetime.datetime.now(),
         )
     new.save()
-    smsCommand = re.split(' */ *',entry['msg'])[0].lower() #issue: should search through file names in smsCommands and match the name using re.IGNORECASE - tbdone later
+    #issue: should search through file names in smsCommands and match 
+    #the name using re.IGNORECASE - tbdone later
+    smsCommand = re.split(' */ *',entry['msg'])[0].lower() 
     m = __import__(name='farmbook.smsCommands.'+smsCommand, 
                    fromlist=['farmbook', 'smsCommands'])
     func = getattr(m,smsCommand)

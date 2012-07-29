@@ -136,7 +136,7 @@ class IncomingSMS(models.Model):
     target = models.CharField('Target', max_length=8)
     msg = models.TextField('Message', blank=True)
     udh = models.TextField('User Data Header', blank=True)
-    timestamp = models.DateTimeField('Timestamp', auto_now_add=True)
+    timestamp = models.DateTimeField('Timestamp') #, auto_now=True)
     def __unicode__(self):
         return u'(%s) %s' % (self.source, self.msgType)
     class Meta:
