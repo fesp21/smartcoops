@@ -112,7 +112,7 @@ class IncomingSMSAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': [
                     'source',
-                    'timestamp',
+                    #'timestamp',
                     'msg',
                     ]}),
         ('SMS Info', {'fields': [

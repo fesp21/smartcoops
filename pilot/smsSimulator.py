@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import re, csv, time, random, getopt, sys, locale
 from datetime import datetime
-import philippinesData, cropInputsData
+import philippinesData, cropInputsData, crops
 
 #Global variables
 scn = "+63 915 866 8018" #Smart Coops number
@@ -11,7 +11,7 @@ affirmativeAns = ['yes','y','ye','ya','oo','yeah','yup','1']
 provinces = philippinesData.provinces
 citiesOrM = philippinesData.citiesOrMunici
 coops = philippinesData.coops
-crops = philippinesData.crops
+crops = crops.crops
 cropInputs = cropInputsData.cropInputs
 
 class Farmer():
@@ -368,7 +368,7 @@ def firstTime():
     print " The sms could be empty, or could require a passcode or a"
     print " keyword like 'join' for the system to engage.\n\n\n"
     s = "Hello, it is the first time you are using SMART Coops. "
-    s = s + "Note that SMS sent to and received from SMART Coops are free of charge, so do not worry about your load balance."
+    s = s + "Note that SMS sent to and received from SMART Coops are FREE OF CHARGEfree of charge, so do not worry about your load balance. We are paying for all SMS you send to SMART Coops."
     smsPrint(s)
     f = Farmer()
     f.setName(getName())
@@ -588,7 +588,7 @@ def contactSCMenu(farmer):
 
 def mainMenu(farmer):
     optionsStr = makeListStr(['Loans','Buy inputs','Sell harvest','Farm advices',
-                              'View my profile','View shortcut commands','Contact SMART Coops'])
+                              'View my profile','View shortcuts','Contact SMART Coops'])
     while True:
         smsPrint("SMART Coops main menu. What would you like to do: "+optionsStr)
         ans = getSMS()
