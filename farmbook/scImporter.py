@@ -1,7 +1,6 @@
-from farmbook.models import Coop
+from farmbook.models import *
 from datetime import date
-import random
-import urllib
+import random, urllib, csv
 
 coopFiles = [
 #  'ARMM_1445',
@@ -24,22 +23,30 @@ coopFiles = [
   ]
 
 coopUrls = [
-#  "https://dl.dropbox.com/s/5suxefyfsjkaln5/test.csv?dl=1",
+  #"https://dl.dropbox.com/s/5suxefyfsjkaln5/test.csv?dl=1",
 ]
 
 def getOrCreateItem(columns):
+  print 'hello'
+
+
 def getOrCreateCropInput(columns):
+  print 'hello'
+
 def getOrCreateCrop(columns):
+  print 'hello'
 
 def getOrCreateCultivation(columns):
+  print 'hello'
+
 def getOrCreateFarmers(columns):
-  
+  print 'hello'
 
 def getOrCreateProvince(pname):
   #find if province exits, if it doesn't, create it
-  existingProvince = Province.objects.filter(
+  existingProvince = list(Province.objects.filter(
     name = pname
-    )
+    ))
   if existingProvince == []:
     p = Province(
       name = pname,
@@ -51,14 +58,15 @@ def getOrCreateProvince(pname):
 
 def getOrCreateMunicipality(p, mcname):
   #find if municipality city exits, if it doesn't, create it
-  existingMunicipalityCity = MunicipalityCity.objects.filter(
+  print mcname
+  existingMunicipalityCity = list(MunicipalityCity.objects.filter(
     province = p,
-    name mcname,
-    )
+    name = mcname,
+    ))
   if existingMunicipalityCity == []:
     mc = MunicipalityCity(
       province = p,
-      name mcname,
+      name = unicode(mcname),
       )
     mc.save()
   else:
@@ -67,13 +75,13 @@ def getOrCreateMunicipality(p, mcname):
 
 def getOrCreateStreetBarangay(mc, sbname):
   #find if street barangay exits, if it doesn't, create it
-  existingStreetBarangay = StreetBarangay.objects.filter(
+  existingStreetBarangay = list(StreetBarangay.objects.filter(
     municipalityCity = mc,
     name = sbname,
-    )
+    ))
   if existingStreetBarangay == []:
     gpsCoord = GPSCoord(
-      longtitue = random.uniform(90,120),
+      longitude = random.uniform(90,120),
       latitude = random.uniform(90,120),
       )
     gpsCoord.save()
@@ -89,90 +97,120 @@ def getOrCreateStreetBarangay(mc, sbname):
 
 def getOrCreateContact(contactName, contactTelNum, contactMobileNum, contactEmail):
 #find if person exits, if it doesn't, create it
-  existingPerson = Person.objetcs.filter(
+  existingPerson = list(Person.objects.filter(
     name = contactName,
     contactTelNum = contactTelNum,
     contactMobileNum = contactMobileNum,
     contactEmail = contactEmail,
-    )
+    ))
   if existingPerson == []:
     person = Person(
-      name = name,
+      name = contactName,
       contactTelNum = contactTelNum,
       contactMobileNum = contactMobileNum,
       contactEmail = contactEmail,
-      dateOfBirth = datetime.date.today(),
+      dateOfBirth = date.today(),
     )
+    person.save()
   else:
     person = existingPerson[0]
   return person
 
 def createCoop(columns):
-  i = 1
+  i = 1 #ignore first column with useless id
   coopId = int(columns[i]); i+=1
-  coop.registrationNum = int(columns[i]); i+=1
-  dateList = columns[i].split('/'); i+1 #mth, day, year
-  coop.registrationDate = datetime.date(dateList[2],dateList[0],dateList[1])
-  coop.oldRegistrationNumber = int(columns[i]); i+=1
-  coop.oldRegistrationDate = int(columns[i]); i+=1
-  coop.name = columns[i]; i+=1
-  coop.category = columns[i]; i+=1
-  coop.type = columns[i]; i+=1
+  registrationNum = columns[i]; i+=1
+  dateList = columns[i].split('/'); i+=1 #mth, day, year
+  registrationDate = date(1900+int(dateList[2]),int(dateList[0]),int(dateList[1]))
+  oldRegistrationNumber = columns[i]; i+=1
+  dateList = columns[i].split('/'); i+=1 #mth, day, year
+  oldRegistrationDate = date(1900+int(dateList[2]),int(dateList[0]),int(dateList[1]))
+  name = columns[i]; i+=1
+  category = columns[i]; i+=1
+  coopType = columns[i]; i+=1
 
   sbname = columns[i]; i+=1
   mcname = columns[i]; i+=1
   pname = columns[i]; i+=1
   p = getOrCreateProvince(pname)
   mc = getOrCreateMunicipality(p,mcname)
-  coop.streetBarangay = getOrCreateStreetBarangay(mc, sbname)
+  streetBarangay = getOrCreateStreetBarangay(mc, sbname)
 
-  coop.bodMale = int(columns[i]); i+=1
-  coop.bodFemale = int(columns[i]); i+=1
-  coop.membesMale = int(columns[i]); i+=1
-  coop.membesFemale = int(columns[i]); i+=1
-  coop.numMembers = int(columns[i]); i+=1
-  coop.totalAssets = int(columns[i]); i+=1
-  coop.commonAuthorized = int(columns[i]); i+=1
-  coop.preferredAuthorized = int(columns[i]); i+=1
-  coop.commonSubscribed = int(columns[i]); i+=1
-  coop.preferredSubscribed = int(columns[i]); i+=1
-  coop.commonPaidUp = int(columns[i]); i+=1
-  coop.preferredPaidUp = int(columns[i]); i+=1
-  coop.birTin = columns[i]; i+=1
+  bodMale = columns[i]; i+=1
+  bodFemale = columns[i]; i+=1
+  membesMale = columns[i]; i+=1
+  membesFemale = columns[i]; i+=1
+  numMembers = int(columns[i]); i+=1
+  totalAssets = columns[i]; i+=1
+  commonAuthorized = columns[i]; i+=1 #float(columns[i].replace(',', '')); i+=1
+  preferredAuthorized = columns[i]; i+=1
+  commonSubscribed = columns[i]; i+=1
+  preferredSubscribed = columns[i]; i+=1 
+  commonPaidUp = columns[i]; i+=1
+  preferredPaidUp = columns[i]; i+=1
+  birTin = columns[i]; i+=1
 
   contactName = columns[i]; i+=1
   contactTelNum = columns[i]; i+=1
   contactMobileNum = columns[i]; i+=1
   contactEmail = columns[i]; i+=1
-  coop.contactPerson = getOrCreateContact(contactName, contactTelNum, contactMobileNum, contactEmail)
+  contactPerson = getOrCreateContact(contactName, contactTelNum, contactMobileNum, contactEmail)
+  
+  coop = Coop(
+    coopId = coopId,
+    registrationNum = registrationNum,
+    registrationDate = registrationDate,
+    oldRegistrationNumber = oldRegistrationNumber,
+    oldRegistrationDate = oldRegistrationDate,
+    name = name,
+    category = category,
+    coopType = coopType,
+    streetBarangay = streetBarangay,
+    bodMale = bodMale,
+    bodFemale = bodFemale,
+    membesMale = membesMale,
+    membesFemale = membesFemale,
+    numMembers = numMembers,
+    totalAssets = totalAssets,
+    commonAuthorized = commonAuthorized,
+    preferredAuthorized = preferredAuthorized,
+    commonSubscribed = commonSubscribed,
+    preferredSubscribed = preferredSubscribed,
+    commonPaidUp = commonPaidUp,
+    preferredPaidUp = preferredPaidUp,
+    birTin = birTin,
+    contactPerson = contactPerson,
+    )  
   coop.save()
   return coop
 
 def getOrCreateCoop(columns):
   #find if coop exists, if it doesn't, create it
-  existingCoop = Province.objects.filter(
+  existingCoop = list(Coop.objects.filter(
     coopId = int(columns[1])
-    )
+    ))
   if existingCoop == []:
     coop = createCoop(columns)
+    print 'Coop '+columns[1]+' created'
   else:
     coop = existingCoop[0]
-    print 'Coop '+coopId+' already exists. This is odd (should double check the data file).'
+    print 'Coop '+columns[1]+' already exists. This is odd (should double check the data file).'
   return coop
 
+#TODO fix the problem iwht universal-newline mode
 for fname in coopUrls:
-  f = urllib.urlopen(fname)
-  for line in f.readline().split('\r'):
-    columns = line.split(',')
-    for col in coopFilesColumns:
-      getOrCreateCoop(getCoopParam(col))
+  f = urllib.urlopen(fname, "rU")
+  line = csv.reader(f, dialect='excel')
+  line.next() #ignore header line lines[0]
+  for col in line:
+    getOrCreateCoop(col)
   f.close()
-
+  
+#/Users/danny/Dropbox/SMART_Coops/Market_Data/Coop_List/test.csv
 for fname in coopFiles:
-  f = open(fname)
-  for line in f.readline().split('\r'):
-    columns = line.split(',')
-    for col in coopFilesColumns:
-      getOrCreateCoop(getCoopParam(col))
+  f = open(fname, "U")
+  line = csv.reader(f, dialect='excel')
+  line.next() #ignore header line lines[0]
+  for col in line:
+    getOrCreateCoop(col)
   f.close()
-    
