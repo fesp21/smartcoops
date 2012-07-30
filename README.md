@@ -4,7 +4,7 @@ We bring a marketplace and mobile banking to agricultural coops. Check out the [
 
 ## Manifest
 
-There are currently two parts to this project. One is a Django web app that deploys to Heroku, and the other is a Python command line simulator for farmer interactions with the yet to be built SMS server.
+There are currently two parts to this project. One is a Django web app that deploys to Heroku, and the other is a Python command line simulator for farmer interactions with the SMS server. At the moment, we need to manually add your phone number and you need to be using a Globe phone number to be able to interact with the application using SMS. Hopefully Smart will fix their issues and hopefully Globe will allow us to accept more phone numbers.
 
 # SMS Simulator Installation
 
@@ -36,10 +36,7 @@ There are currently two parts to this project. One is a Django web app that depl
 1. `python ~/antportal/smartcoops/django manage.py syncdb`
 1. `python ~/antportal/smartcoops/django manage.py runserver`
 1. Go to `127.0.0.1:8000` or `127.0.0.1:8000` 
-1. To test sending SMS messages, modify `sms.xml` and use `curl -d @sms.xml http://localhost:8000/process/`
-
-
-curl -d @antportal/smartcoops/cashVoucher.xml http://localhost:8000/process/
+1. To test sending SMS messages, modify `sms.xml` (or `cashVoucher.xml`) and use `curl -d @antportal/smartcoops/cashVoucher.xml http://localhost:8000/process/`
 
 ### Run the django app on heroku
 
@@ -50,6 +47,7 @@ curl -d @antportal/smartcoops/cashVoucher.xml http://localhost:8000/process/
 1. `git push heroku master`
 1. `heroku run python manage.py syncdb`
 1. Check that it works by visiting the [home page](http://tranquil-ocean-3872.heroku.com) and the [admin page](http://tranquil-ocean-3872.heroku.com/admin) (username: danny, password: smartcoopsftw) on Heroku
+
 
 ## Copyright
 
