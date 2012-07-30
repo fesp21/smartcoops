@@ -32,6 +32,7 @@ There are currently two parts to this project. One is a Django web app that depl
 
 ### Run the django app locally
 
+1. (Optional through recommended) `cp farmbook/rename2local_settings4sqlite.py farmbook/local_settings.py` - this will set your local db to sqlite
 1. `python ~/antportal/smartcoops/django manage.py syncdb`
 1. `python ~/antportal/smartcoops/django manage.py runserver`
 1. Go to `127.0.0.1:8000` or `127.0.0.1:8000` 
