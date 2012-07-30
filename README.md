@@ -17,25 +17,25 @@ There are currently two parts to this project. One is a Django web app that depl
 
 1. `python ~/antportal/smartcoops/pilot/smsSimulator.py`
 
-## Django app on Heroku Installation
+# Django app on Heroku Installation (works with Globe SMS)
 
-2. `curl -O https://raw.github.com/pypa/virtualenv/master/virtualenv.py`
+1. `curl -O https://raw.github.com/pypa/virtualenv/master/virtualenv.py`
 1. `python virtualenv.py scenv`  
 1. `source ~/antportal/scenv/bin/activate`
 1. `pip install django`
 1. `pip install dj-database-url`
 1. `pip install django-extensions`
 1. Follow instructions from the [dev center of Heroku](https://devcenter.heroku.com/articles/django)
-1. (Under macos) You might run into trouble with the installation of postgre, if so this [article might help you](http://stackoverflow.com/questions/846383/problem-installing-pyscopg2-on-mac-os-x)
-1. Add your ssh key to heroku `heroku keys:add` 
-1. `git remote add heroku git@heroku.com:tranquil-ocean-3872.git`
+1. If you are using MacOS, you might run into trouble with the installation of postgre, if so this [article might help you](http://stackoverflow.com/questions/846383/problem-installing-pyscopg2-on-mac-os-x)
+1. Add your ssh key to heroku: `heroku keys:add` 
+1. Add heroku to your list of remotes: `git remote add heroku git@heroku.com:tranquil-ocean-3872.git`
+1. (Optional through recommended) set your local db to sqlite (especially if you couldn't get postgres installed propertly configured) `cp farmbook/rename2local_settings4sqlite.py farmbook/local_settings.py`
 
 ### Run the django app locally
 
-1. (Optional through recommended) `cp farmbook/rename2local_settings4sqlite.py farmbook/local_settings.py` - this will set your local db to sqlite
 1. `python ~/antportal/smartcoops/django manage.py syncdb`
 1. `python ~/antportal/smartcoops/django manage.py runserver`
-1. Go to `127.0.0.1:8000` or `127.0.0.1:8000` 
+1. Go to `127.0.0.1:8000` or `127.0.0.1:8000/admin` 
 1. To test sending SMS messages, modify `sms.xml` (or `cashVoucher.xml`) and use `curl -d @antportal/smartcoops/cashVoucher.xml http://localhost:8000/process/ | grep -A 20 Traceback:` (the `| grep -A 20 Traceback:` part is useful if you are debugging)
 
 ### Run the django app on heroku
