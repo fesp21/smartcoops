@@ -34,10 +34,11 @@ There are currently two parts to this project. One is a Django web app that depl
 ### Run the django app locally
 
 1. Change directory to smartcoops (e.g. `cd ~/antportal/smartcoops/`)
+1. Make sure you are in the virtual environment (`source ~/antportal/scenv/bin/activate`)
 1. `python manage.py syncdb`
 1. `python manage.py runserver`
 1. Go to `127.0.0.1:8000` or `127.0.0.1:8000/admin` 
-1. To test sending SMS messages, modify `sms.xml` (or `cashVoucher.xml`) and use `curl -d @cashVoucher.xml http://localhost:8000/process/ | grep -A 20 Traceback:` (the `| grep -A 20 Traceback:` part is useful if you are debugging)
+1. Change directory to sampleSMSCommand directory (e.g. `cd ~/antportal/smartcoops/sampleSMSCommand/`). To test sending SMS messages, modify `sms.xml` (or `cashVoucher.xml`) and use `curl -d @cashVoucher.xml http://localhost:8000/process/ | grep -A 20 Traceback:` (the `| grep -A 20 Traceback:` part is useful if you are debugging)
 
 ### Run the django app on heroku
 
