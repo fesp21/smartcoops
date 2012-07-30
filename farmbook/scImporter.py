@@ -21,10 +21,26 @@ coopFiles = [
 #  'REGION_9_760',
   ]
 
-def createCoop(col):
+def getOrCreateItem(columns):
+def getOrCreateCropInput(columns):
+def getOrCreateCrop(columns):
+
+def getOrCreateCultivation(columns):
+def getOrCreateFarmers(columns):
+
+
+def getOrCreateCoop(columns):
+  coopId = int(columns[i]); i+=1
+
+  #find if coop exists, if it doesn't, create it
+  existingCoop = Province.objects.filter(
+    coopId = coopId
+    )
+  if existingCoop == []:
+    coop = 
   coop = Coop()  
   i = 0
-  coop.coopId = int(columns[i]); i+=1
+
   coop.registrationNum = int(columns[i]); i+=1
   dateList = columns[i].split('/'); i+1 #mth, day, year
   coop.registrationDate = datetime.date(dateList[2],dateList[0],dateList[1])
