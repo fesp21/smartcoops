@@ -104,7 +104,7 @@ class CropInput(Item):
     recommendedUsage = models.TextField("Recommended Usage")
 
 class Crop(Item):
-    cropInputs = models.ManyToManyField(CropInput)
+    cropInputs = models.ManyToManyField(CropInput,blank=True)
 
 class Farmer(Person):
     coop = models.ForeignKey(Coop) #could farmers be part of more than one coop?
@@ -131,7 +131,7 @@ class PurchasedItem(models.Model):
     purchase = models.ForeignKey(Purchase)
     def __unicode__(self):
         return self.purchase.farmer.name + " purchased " + str(self.quantity) + " units of " + self.item.name + " for a price of " + str(self.price)
-        
+
 class IncomingSMS(models.Model):
     msgType = models.CharField('Message Type', max_length=5)
     msgId = models.CharField('Message ID', max_length=50)

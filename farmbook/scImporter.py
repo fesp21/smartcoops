@@ -1,7 +1,10 @@
 from farmbook.models import *
 from datetime import date
 import random, urllib, csv
-import farmbook.testCropInputs
+
+from farmbook.testCropInputs import cropInputs
+from farmbook.testPhilippinesData import provinces, citiesOrMunici
+from farmbook.testCrops import crops
 
 coopFiles = [
 #  'ARMM_1445',
@@ -28,17 +31,13 @@ coopUrls = [
   #"https://dl.dropbox.com/s/5suxefyfsjkaln5/test.csv?dl=1",
 ]
 
-cropInputs = [
-  'farmbook/testCropInputs.csv'
-]
-
 def getOrCreateItem(columns):
   print 'hello'
 
 def getOrCreateCropInput(cropInput):
   #find if cropInput exits, if it doesn't, create it
   existingCI = list(CropInput.objects.filter(
-      name = cropInput['name'],
+      name = cropInput['productName'],
       manufacturer = cropInput['brand'],
       brand = cropInput['brand'],
       units = cropInput['units'],
@@ -46,7 +45,7 @@ def getOrCreateCropInput(cropInput):
       ))
   if existingCI == []:
     ci = CropInput(
-      name = cropInput['name'],
+      name = cropInput['productName'],
       price = cropInput['price'],
       manufacturer = cropInput['brand'],
       activeIngredients = cropInput['productIngredient'],
@@ -63,23 +62,32 @@ def getOrCreateCropInput(cropInput):
 for cropInput in cropInputs:
   getOrCreateCropInput(cropInput)
 
-def getOrCreateCrop(columns):
-  print 'hello'
+def getOrCreateCrop(name, price, cropInputs):
+  #find if crop exits, if it doesn't, create it
+  existingCrop = list(Crop.objects.filter(
+      name = name
+      ))
+  if existingCrop == []:
+    crop = Crop(
+      name = name,
+      price = price
+      )
+    for ci in cropInputs:
+      crop.cropInputs.add(ci)
+    crop.save()
+  else:
+    crop = existingCrop[0]
+  return crop
+  
+for crop in crops:
+  price = random.uniform(40,200)
+  getOrCreateCrop(crop,price,[])
 
 def getOrCreateCultivation(columns):
   print 'hello'
 
 def getOrCreateFarmers(columns):
   print 'hello'
-
-
-
-
-
-
-
-
-
 
 def getOrCreateProvince(pname):
   #find if province exits, if it doesn't, create it
@@ -94,6 +102,9 @@ def getOrCreateProvince(pname):
   else:
     p = existingProvince[0]
   return p
+
+for p in provinces:
+  getOrCreateProvince(p)
 
 def getOrCreateMunicipality(p, mcname):
   #find if municipality city exits, if it doesn't, create it
@@ -110,6 +121,12 @@ def getOrCreateMunicipality(p, mcname):
   else:
     mc = existingMunicipalityCity[0]
   return mc
+
+for prov in provinces:
+  p = getOrCreateProvince(prov)
+  if citiesOrMunici.has_key(prov):
+    for cm in citiesOrMunici[prov]:
+      getOrCreateMunicipality(p, cm)
 
 def getOrCreateStreetBarangay(mc, sbname):
   #find if street barangay exits, if it doesn't, create it
