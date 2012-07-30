@@ -1,6 +1,7 @@
 from farmbook.models import *
 from datetime import date
 import random, urllib, csv
+import farmbook.testCropInputs
 
 coopFiles = [
 #  'ARMM_1445',
@@ -19,19 +20,48 @@ coopFiles = [
 #  'REGION_7_1574',
 #  'REGION_8_684',
 #  'REGION_9_760',
-  '/Users/danny/Dropbox/SMART_Coops/Market_Data/Coop_List/test.csv',
+#  '/Users/danny/Dropbox/SMART_Coops/Market_Data/Coop_List/test.csv',
+  'farmbook/testCoops.csv',
   ]
 
 coopUrls = [
   #"https://dl.dropbox.com/s/5suxefyfsjkaln5/test.csv?dl=1",
 ]
 
+cropInputs = [
+  'farmbook/testCropInputs.csv'
+]
+
 def getOrCreateItem(columns):
   print 'hello'
 
+def getOrCreateCropInput(cropInput):
+  #find if cropInput exits, if it doesn't, create it
+  existingCI = list(CropInput.objects.filter(
+      name = cropInput['name'],
+      manufacturer = cropInput['brand'],
+      brand = cropInput['brand'],
+      units = cropInput['units'],
+      category =  cropInput['category'],
+      ))
+  if existingCI == []:
+    ci = CropInput(
+      name = cropInput['name'],
+      price = cropInput['price'],
+      manufacturer = cropInput['brand'],
+      activeIngredients = cropInput['productIngredient'],
+      brand = cropInput['brand'],
+      units = cropInput['units'],
+      category =  cropInput['category'],
+      recommendedUsage = cropInput['recommendedUsage'],
+      )
+    ci.save()
+  else:
+    ci = existingCI[0]
+  return ci
 
-def getOrCreateCropInput(columns):
-  print 'hello'
+for cropInput in cropInputs:
+  getOrCreateCropInput(cropInput)
 
 def getOrCreateCrop(columns):
   print 'hello'
@@ -41,6 +71,15 @@ def getOrCreateCultivation(columns):
 
 def getOrCreateFarmers(columns):
   print 'hello'
+
+
+
+
+
+
+
+
+
 
 def getOrCreateProvince(pname):
   #find if province exits, if it doesn't, create it
@@ -58,7 +97,6 @@ def getOrCreateProvince(pname):
 
 def getOrCreateMunicipality(p, mcname):
   #find if municipality city exits, if it doesn't, create it
-  print mcname
   existingMunicipalityCity = list(MunicipalityCity.objects.filter(
     province = p,
     name = mcname,
@@ -214,3 +252,4 @@ for fname in coopFiles:
   for col in line:
     getOrCreateCoop(col)
   f.close()
+
