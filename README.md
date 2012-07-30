@@ -49,7 +49,7 @@ curl -d @antportal/smartcoops/cashVoucher.xml http://localhost:8000/process/
 1. `git push` so your changes go to GitHub
 1. `git push heroku master`
 1. `heroku run python manage.py syncdb`
-1. Check that it works by visiting the [home page](http://tranquil-ocean-3872.heroku.com) and the [admin page](http://tranquil-ocean-3872.heroku.com/admin) on Heroku
+1. Check that it works by visiting the [home page](http://tranquil-ocean-3872.heroku.com) and the [admin page](http://tranquil-ocean-3872.heroku.com/admin) (username: danny, password: smartcoopsftw) on Heroku
 
 ## Copyright
 
