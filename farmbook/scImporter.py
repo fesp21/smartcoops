@@ -20,7 +20,7 @@ coopFiles = [
 #  'REGION_7_1574',
 #  'REGION_8_684',
 #  'REGION_9_760',
-  'test',
+  '/Users/danny/Dropbox/SMART_Coops/Market_Data/Coop_List/test.csv',
   ]
 
 coopUrls = [
@@ -162,7 +162,7 @@ def getOrCreateCoop(columns):
 
 for fname in coopUrls:
   f = urllib.urlopen(fname)
-  for line in f.readline.split('\r')
+  for line in f.readline().split('\r'):
     columns = line.split(',')
     for col in coopFilesColumns:
       getOrCreateCoop(getCoopParam(col))
@@ -170,7 +170,7 @@ for fname in coopUrls:
 
 for fname in coopFiles:
   f = open(fname)
-  for line in f:
+  for line in f.readline().split('\r'):
     columns = line.split(',')
     for col in coopFilesColumns:
       getOrCreateCoop(getCoopParam(col))
