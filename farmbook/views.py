@@ -8,7 +8,7 @@ import re
 from django.shortcuts import render_to_response
 
 import datetime
-from farmbook.models import *b
+from farmbook.models import *
 
 def index(request):
     farmerList = Farmer.objects.all()
