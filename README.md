@@ -36,7 +36,7 @@ There are currently two parts to this project. One is a Django web app that depl
 1. `python ~/antportal/smartcoops/django manage.py syncdb`
 1. `python ~/antportal/smartcoops/django manage.py runserver`
 1. Go to `127.0.0.1:8000` or `127.0.0.1:8000` 
-1. To test sending SMS messages, modify `sms.xml` (or `cashVoucher.xml`) and use `curl -d @antportal/smartcoops/cashVoucher.xml http://localhost:8000/process/`
+1. To test sending SMS messages, modify `sms.xml` (or `cashVoucher.xml`) and use `curl -d @antportal/smartcoops/cashVoucher.xml http://localhost:8000/process/ | grep -A 20 Traceback:` (the `| grep -A 20 Traceback:` part is useful if you are debugging)
 
 ### Run the django app on heroku
 
