@@ -76,8 +76,22 @@ def getOrCreateCrop(name, price, cropInputs):
     crop = existingCrop[0]
   return crop
   
-def getOrCreateCultivation(columns):
-  print 'hello'
+def getOrCreateCultivation(farmer, crop, hectare = 0):
+  #find if province exits, if it doesn't, create it
+  existingCultivation = list(Cultivation.objects.filter(
+    farmer = farmer,
+    crop = crop,
+    ))
+  if existingCultivation == []:
+    new = Cultivation(
+      farmer = farmer,
+      crop = crop,
+      hectare = hectare,
+      )
+    new.save()
+  else:
+    new = existingCultivation[0]
+  return new
 
 def getOrCreateFarmer(name, contactTelNum, contactMobileNum, contactEmail, dateOfBirth, coop, loanBalance = 0, savingsBalance = 0):
   #find if province exits, if it doesn't, create it
@@ -299,10 +313,15 @@ for fname in coopFiles:
     #print "Coop '%s' has been created" % col[6]
   f.close()
 
+def addFakeCultivations(farmer):
+  for i in range(1,random.randint(2,6)):
+    crop = random.choice(Crop.objects.all())
+    getOrCreateCultivation(farmer, crop, hectare = random.choice([.5,1,1.5,2,2.5,3,4,5,6,7,8]))
+
 sanbenito = getOrCreateCoop(['blah','103040429']) #103040429 is the San Benito coopId
-danny = getOrCreateFarmer('Danny Castonguay','09158668018','09158668018','danny@smartcoop.com',date(1982,2,12), sanbenito, 40000, 34000)
+danny = getOrCreateFarmer('Danny Castonguay','0','09158668018','danny@smartcoop.com',date(1982,2,12), sanbenito, 40000, 34000)
 #print "Farmer '%s' has been created" % danny.name
-leah = getOrCreateFarmer('Leah Capitan','09158668018','09158668018','danny@smartcoop.com',date(1979,9,2), sanbenito, 54000, 37000)
+addFakeCultivations(danny)
+leah = getOrCreateFarmer('Leah Capitan','0','09158668018','danny@smartcoop.com',date(1979,9,2), sanbenito, 54000, 37000)
 #print "Farmer '%s' has been created" % leah.name
-
-
+addFakeCultivations(leah)

@@ -65,12 +65,24 @@ class CoopAdmin(admin.ModelAdmin):
 
 admin.site.register(Coop, CoopAdmin)
 admin.site.register(Item)
-admin.site.register(CropInput)
-admin.site.register(Crop)
+
+class CropInputAdmin(admin.ModelAdmin):
+    list_display = ['name','price','units','brand']
+    list_filter = ['brand']
+    search_fields = ['name']
+
+admin.site.register(CropInput, CropInputAdmin)
+
+class CropAdmin(admin.ModelAdmin):
+    list_display = ['name','price']
+    #list_filter = ['name']
+    search_fields = ['name']
+
+admin.site.register(Crop, CropAdmin)
 
 class CultivationInline(admin.TabularInline):
     model = Cultivation
-    extra = 3
+    extra = 1
 
 class FarmerAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -93,7 +105,13 @@ class FarmerAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 admin.site.register(Farmer, FarmerAdmin)
-admin.site.register(Cultivation)
+
+class CultivationAdmin(admin.ModelAdmin):
+    list_display = ['farmer','crop','hectare']
+    list_filter = ['farmer__name']
+    search_fields = ['farmer__name','crop__name']
+
+admin.site.register(Cultivation, CultivationAdmin)
 
 class PurchasedItemInline(admin.TabularInline):
     model = PurchasedItem

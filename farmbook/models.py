@@ -86,10 +86,9 @@ class Item(models.Model):
         return self.name
 
 class CropInput(Item):
-    manufacturer = models.CharField("Manufacturer", max_length=200)
-    activeIngredients = models.TextField("Active ingredients")
-    brand = models.CharField("Brand", max_length=200)
     units = models.CharField("Units", max_length=50)
+    brand = models.CharField("Brand", max_length=200)
+    manufacturer = models.CharField("Manufacturer", max_length=200)
     CATEGORY_CHOICES = (
         (U'Fertilizer','Fertilizer'),
         (U'Fungicides','Fungicides'),
@@ -101,6 +100,7 @@ class CropInput(Item):
         (U'Seeds','Seeds'),
         )
     category =  models.CharField("Category", max_length=50, choices=CATEGORY_CHOICES)
+    activeIngredients = models.TextField("Active ingredients")
     recommendedUsage = models.TextField("Recommended Usage")
 
 class Crop(Item):
