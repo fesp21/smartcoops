@@ -8,7 +8,7 @@ There are currently two parts to this project. One is a Django web app that depl
 
 # SMS Simulator Installation
 
-1. Install Python 2.5 or above (not Python 3.X unfortunately, since django does not support 3.X yet)
+1. Install Python 2.7 or above (not Python 3.X unfortunately, since django does not support 3.X yet), if you are having trouble in MacOS try [these steps](http://myadventuresincoding.wordpress.com/2011/09/11/python-upgrading-python-with-easy_install-pip-and-virtualenv-on-a-mac/)
 1. Install [git](http://git-scm.com/downloads)
 1. Go to the folder where you want to code (in my examples, I type `cd ~/antportal/`)
 1. `git clone git@github.com:dannycastonguay/smartcoops.git`
