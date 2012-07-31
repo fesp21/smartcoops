@@ -32,7 +32,7 @@ coopUrls = [
 ]
 
 def getOrCreateItem(columns):
-  print 'hello'
+  print '\n\n\n WARNING: getOrCreateItem not done yet. This fct should not be called. \n\n\n'
 
 def getOrCreateCropInput(cropInput):
   #find if cropInput exits, if it doesn't, create it
@@ -59,9 +59,6 @@ def getOrCreateCropInput(cropInput):
     ci = existingCI[0]
   return ci
 
-for cropInput in cropInputs:
-  getOrCreateCropInput(cropInput)
-
 def getOrCreateCrop(name, price, cropInputs):
   #find if crop exits, if it doesn't, create it
   existingCrop = list(Crop.objects.filter(
@@ -79,15 +76,30 @@ def getOrCreateCrop(name, price, cropInputs):
     crop = existingCrop[0]
   return crop
   
-for crop in crops:
-  price = random.uniform(40,200)
-  getOrCreateCrop(crop,price,[])
-
 def getOrCreateCultivation(columns):
   print 'hello'
 
-def getOrCreateFarmers(columns):
-  print 'hello'
+def getOrCreateFarmer(name, contactTelNum, contactMobileNum, contactEmail, dateOfBirth, coop, loanBalance = 0, savingsBalance = 0):
+  #find if province exits, if it doesn't, create it
+  existingFarmer = list(Farmer.objects.filter(
+    name = name,
+    contactMobileNum = contactMobileNum,
+    ))
+  if existingFarmer == []:
+    f = Farmer(
+      name = name,
+      contactTelNum = contactTelNum,
+      contactMobileNum = contactMobileNum,
+      contactEmail = contactEmail,
+      dateOfBirth = dateOfBirth,
+      coop = coop,
+      loanBalance = loanBalance,
+      savingsBalance = savingsBalance,
+      )
+    f.save()
+  else:
+    f = existingFarmer[0]
+  return f
 
 def getOrCreateProvince(pname):
   #find if province exits, if it doesn't, create it
@@ -102,9 +114,6 @@ def getOrCreateProvince(pname):
   else:
     p = existingProvince[0]
   return p
-
-for p in provinces:
-  getOrCreateProvince(p)
 
 def getOrCreateMunicipality(p, mcname):
   #find if municipality city exits, if it doesn't, create it
@@ -121,12 +130,6 @@ def getOrCreateMunicipality(p, mcname):
   else:
     mc = existingMunicipalityCity[0]
   return mc
-
-for prov in provinces:
-  p = getOrCreateProvince(prov)
-  if citiesOrMunici.has_key(prov):
-    for cm in citiesOrMunici[prov]:
-      getOrCreateMunicipality(p, cm)
 
 def getOrCreateStreetBarangay(mc, sbname):
   #find if street barangay exits, if it doesn't, create it
@@ -246,13 +249,38 @@ def getOrCreateCoop(columns):
     ))
   if existingCoop == []:
     coop = createCoop(columns)
-    print 'Coop '+columns[1]+' created'
   else:
     coop = existingCoop[0]
-    print 'Coop '+columns[1]+' already exists. This is odd (should double check the data file).'
+    #print 'Coop '+columns[1]+' already exists. This is odd (should double check the data file).'
   return coop
 
-#TODO fix the problem iwht universal-newline mode
+
+######################################################################
+#
+#   Create provinces, cities, barangays, coops, cropinputs, crops
+#
+######################################################################
+for p in provinces:
+  getOrCreateProvince(p)
+  #print "Province '%s' has been created" % p
+
+for prov in provinces:
+  p = getOrCreateProvince(prov)
+  if citiesOrMunici.has_key(prov):
+    for cm in citiesOrMunici[prov]:
+      getOrCreateMunicipality(p, cm)
+      #print "City (or Mun.) '%s' has been created" % cm
+
+for cropInput in cropInputs:
+  getOrCreateCropInput(cropInput)
+  #print "Crop input '%s' has been created" % cropInput['productName']
+
+for crop in crops:
+  price = random.uniform(40,200)
+  getOrCreateCrop(crop,price,[])
+  #print "Crop '%s' has been created" % crop
+
+#TODO fix the problem wiht universal-newline mode
 for fname in coopUrls:
   f = urllib.urlopen(fname, "rU")
   line = csv.reader(f, dialect='excel')
@@ -268,5 +296,13 @@ for fname in coopFiles:
   line.next() #ignore header line lines[0]
   for col in line:
     getOrCreateCoop(col)
+    #print "Coop '%s' has been created" % col[6]
   f.close()
+
+sanbenito = getOrCreateCoop(['blah','103040429']) #103040429 is the San Benito coopId
+danny = getOrCreateFarmer('Danny Castonguay','09158668018','09158668018','danny@smartcoop.com',date(1982,2,12), sanbenito, 40000, 34000)
+#print "Farmer '%s' has been created" % danny.name
+leah = getOrCreateFarmer('Leah Capitan','09158668018','09158668018','danny@smartcoop.com',date(1979,9,2), sanbenito, 54000, 37000)
+#print "Farmer '%s' has been created" % leah.name
+
 
