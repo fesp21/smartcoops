@@ -50,6 +50,7 @@ There are currently two parts to this project. One is a Django web app that depl
 ### Starting fresh with new data
 
 Assuming that you are running locally:
+
 1. `git pull`
 1. `python manage.py reset` (anwer yes)
 1. `python manage.py syncdb`
