@@ -1,7 +1,7 @@
 import re
 from farmbook.models import *
 
-def cashvoucher(entry):
+def cashVoucher(entry):
     """
     Description:
     When the coop disburses cash loans to member farmers; also used for when they incur expenses, eg. Xerox Php14.00
