@@ -22,7 +22,7 @@ There are currently two parts to this project. One is a Django web app that depl
 1. `curl -O https://raw.github.com/pypa/virtualenv/master/virtualenv.py`
 1. `python virtualenv.py scenv`  
 1. `source ~/antportal/scenv/bin/activate`
-1. `pip install django dj-database-url django-extensions psycopg2` (requirements come from the [dev center of Heroku](https://devcenter.heroku.com/articles/django))
+1. `pip install django dj-database-url django-extensions psycopg2 pyglobe` (requirements come from the [dev center of Heroku](https://devcenter.heroku.com/articles/django))
 1. If you are using MacOS, you might run into trouble with the installation of postgre, if so this [article might help you](http://stackoverflow.com/questions/846383/problem-installing-pyscopg2-on-mac-os-x)
 1. Add your ssh key to heroku: `heroku keys:add` 
 1. Add heroku to your list of remotes: `git remote add heroku git@heroku.com:tranquil-ocean-3872.git`
