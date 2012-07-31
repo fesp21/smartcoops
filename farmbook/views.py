@@ -4,15 +4,23 @@ from django.views.decorators.csrf import csrf_exempt
 from xml.dom import minidom
 import datetime
 import re
+import os
 
-from django.shortcuts import render_to_response
-
-import datetime
 from farmbook.models import *
 
 def index(request):
     farmerList = Farmer.objects.all()
     return render_to_response('farmbook/index.html', {'farmerList': farmerList})
+
+def getSMSCommand(userPattern, smsCommands):
+    """ Search through file names in smsCommands and match the name using re.IGNORECASE
+    return baseMenu is user command is not found."""
+    if smsCommands == []:
+        return 'baseMenu'
+    smsCmd = re.search(userPattern, smsCommands[0])
+    if smsCmd:
+        return smsCmd.group()[:-3] #remove .py
+    return getSMSCommand(userPattern,smsCommands[1:])
 
 def updateIncomingSMS(entry):
     new = IncomingSMS(
@@ -25,9 +33,10 @@ def updateIncomingSMS(entry):
         timestamp = datetime.datetime.now(),
         )
     new.save()
-    #issue: should search through file names in smsCommands and match 
-    #the name using re.IGNORECASE - tbdone later
-    smsCommand = re.split(' */ *',entry['msg'])[0].lower() 
+
+    userCommand = re.split(' */ *',entry['msg'])[0]
+    smsCommands = os.listdir('farmbook/smsCommands')
+    smsCommand = getSMSCommand(re.compile(userCommand+'\.py', re.IGNORECASE),smsCommands)
     m = __import__(name='farmbook.smsCommands.'+smsCommand, 
                    fromlist=['farmbook', 'smsCommands'])
     func = getattr(m,smsCommand)

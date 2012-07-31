@@ -21,9 +21,11 @@ def cashvoucher(entry):
     cashvoucher Onyo Aquino/xerox/14 [in this case, Onyo is the coop officer who used his personal money to buy a xerox and then got reimbursed by the coop]
     """
     params = re.split(' */ *',entry['msg'])
-    smsCommand = params[0].lower()
+    #params[0] is smsCommand
     farmerName = params[1]
     description = params[2]
+    amount = params[3]
+    #print "CASHVOUCHER. farmerName:%s. description:%s. amount:%s." % (farmerName, description, amount)
     try:
         amount = float(params[3])
     except ValueError: 
