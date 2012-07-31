@@ -47,6 +47,15 @@ There are currently two parts to this project. One is a Django web app that depl
 1. `heroku run python manage.py syncdb`
 1. Check that it works by visiting the [home page](http://tranquil-ocean-3872.heroku.com) and the [admin page](http://tranquil-ocean-3872.heroku.com/admin) (username: danny, password: smartcoopsftw) on Heroku
 
+### Starting fresh with new data
+
+Assuming that you are running locally:
+1. `git pull`
+1. `python manage.py reset` (anwer yes)
+1. `python manage.py syncdb`
+1. `python manage.py shell` (this will load the interactive python command interpreter)
+1. `import farmbook.scImporter`
+1. Start your server as usual `python manage.py runserver`
 
 ## Copyright
 
