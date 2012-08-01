@@ -1,5 +1,6 @@
 import re
 from farmbook.models import *
+from farmbook.sms import *
 
 def charge(entry):
     """
@@ -34,11 +35,14 @@ def charge(entry):
     #add loan amount to farmer's account
     #send confirmation SMS to farmer
     farmerName = params[1]
-    description = params[2]
-    amount = params[3]
+    item = params[2]
     #print "CASHVOUCHER. farmerName:%s. description:%s. amount:%s." % (farmerName, description, amount)
     try:
-        amount = float(params[3])
+        numUnits = params[3]
+        price = params[4]
+        amount = float(numUnits)*float(price)
+        reply = "Comfirmed. Charge on loan to %s. Total amount %s. Purchase: %s units of %s." % (farmerName,amount,numUnits,item)
+        print reply #sendSMS(danny,reply)
     except ValueError: 
         reply = "Could not complete cash voucher, amount entered is not numerical. "
         reply += "Example of a valid entry would be: "+smsCommand+"/"
