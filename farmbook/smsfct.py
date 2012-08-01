@@ -2,6 +2,13 @@ import re, pyglobe
 from farmbook.models import *
 
 
+
+def getParams(entry):
+    return re.split(' */ *',entry['msg'])
+
+def getMobile(entry):
+    return entry['source']
+
 danny = '09158668018'
 leah = '09158668019'
 

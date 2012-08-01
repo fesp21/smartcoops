@@ -1,4 +1,4 @@
-import farmbook.smsfct
+from farmbook.smsfct import *
 
 def baseMenu(entry):
     """
@@ -7,5 +7,3 @@ def baseMenu(entry):
     and will reply to the user with a list of the base commands available.
     """
     print "SMART Coops main menu. What would you like to do: Loans, Buy inputs, Sell harvest, Farm advices, View my profile, Contacct SMART Coops"
-    
-

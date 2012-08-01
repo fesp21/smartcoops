@@ -1,4 +1,4 @@
-import farmbook.smsfct
+from farmbook.smsfct import *
 
 def cashVoucher(entry):
     """
@@ -13,13 +13,15 @@ def cashVoucher(entry):
     Explanation (a more detailed description but can be combined with "Description")
 
     Sample SMS Format:
-    CASHVOUCHER Name/Description/Amount
+    CASHVOUCHER/loan/member name/amount/Description
+    CASHVOUCHER/suppliers/supplier name/amount/Description
 
     Examples:
-    cashvoucher Charlie Santos/loan/20000
-    cashvoucher Onyo Aquino/xerox/14 [in this case, Onyo is the coop officer who used his personal money to buy a xerox and then got reimbursed by the coop]
+    `cashvoucher/loan/Charlie Santos/20000/for rice fields`
+    `cashvoucher/supplies/Onyo Aquino/1400/xerox` in this case, Onyo is the coop officer who used his personal money to buy a xerox and then got reimbursed by the coop
     """
-    params = re.split(' */ *',entry['msg'])
+
+    params = getParams(entry)
     #params[0] is smsCommand
     farmerName = params[1]
     description = params[2]
@@ -31,5 +33,5 @@ def cashVoucher(entry):
         reply = "Could not complete cash voucher, amount entered is not numerical. "
         reply += "Example of a valid entry would be: "+smsCommand+"/"
         reply += farmerName+"/"+description+str(450.50)
-        return reply
+        print reply
 

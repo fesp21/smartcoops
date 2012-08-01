@@ -1,4 +1,4 @@
-import farmbook.smsfct
+from farmbook.smsfct import *
 
 def charge(entry):
     """
@@ -26,7 +26,7 @@ def charge(entry):
     ChArGe/ChArLiE SaNTos/viking/3/100
     charge/charlie santos/viking/3/100/organic fertilizer/2/25
     """
-    params = re.split(' */ *',entry['msg'])
+    params = getParams(entry)
     #params[0] is smsCommand
     #get coop from entry SMS number.
     #find if item is in the inventory for the coop. If it isn't, still move forward with the transaction but warn the coop that they need to update their inventory because one of the item is now in negative inventory.

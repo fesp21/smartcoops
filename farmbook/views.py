@@ -2,11 +2,8 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from xml.dom import minidom
-import datetime
-import re
-import os
-
 from farmbook.models import *
+import datetime, re, os
 
 def index(request):
     farmerList = Farmer.objects.all()
