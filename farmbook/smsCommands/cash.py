@@ -1,2 +1,5 @@
+import farmbook.smsfct
+from farmbook.smsCommands.cashVoucher import cashVoucher
+
 def cash(entry):
-    cashvoucher(entry)
+    cashVoucher(entry)

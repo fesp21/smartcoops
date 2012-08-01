@@ -1,6 +1,4 @@
-import re
-from farmbook.models import *
-from farmbook.sms import *
+import farmbook.smsfct
 
 def charge(entry):
     """

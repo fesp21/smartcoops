@@ -1,5 +1,4 @@
-import re
-from farmbook.models import *
+import farmbook.smsfct
 
 def cashVoucher(entry):
     """
