@@ -22,9 +22,9 @@ def charge(entry):
 
     Examples:
 
-    charge/charlie santos/24D/2/25
-    ChArGe/ChArLiE SaNTos/viking/3/100
-    charge/charlie santos/viking/3/100/organic fertilizer/2/25
+    `charge/charlie santos/24D/2/25`
+    `ChArGe/ChArLiE SaNTos/viking/3/100`
+    `charge/charlie santos/viking/3/100/organic fertilizer/2/25`
     """
     params = getParams(entry)
     #params[0] is smsCommand
@@ -34,13 +34,13 @@ def charge(entry):
     #send confirmation SMS to farmer
     farmerName = params[1]
     item = params[2]
-    #print "CASHVOUCHER. farmerName:%s. description:%s. amount:%s." % (farmerName, description, amount)
     try:
         numUnits = params[3]
         price = params[4]
         amount = float(numUnits)*float(price)
         reply = "Comfirmed. Charge on loan to %s. Total amount %s. Purchase: %s units of %s." % (farmerName,amount,numUnits,item)
-        print reply #sms.sendSMS(danny,reply)
+        print reply 
+        sendSMS(danny,reply)
     except ValueError: 
         reply = "Could not complete cash voucher, amount entered is not numerical. "
         reply += "Example of a valid entry would be: "+smsCommand+"/"
