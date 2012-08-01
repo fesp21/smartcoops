@@ -4,7 +4,7 @@ from farmbook.models import *
 
 
 def getParams(entry):
-    return re.split(' */ *',entry['msg'])
+    return re.split(' *?/ *?',entry['msg'])
 
 def getMobile(entry):
     return entry['source']
@@ -35,3 +35,36 @@ def sendSMS(phoneNumber,msg):
             pyglobe.PyGlobeInvalidURLException,
             pyglobe.PyGlobeServerFaultException) as e:
         print "An error occurred: %s" % e
+
+def searchList(myStr, myList):
+    """Returns the set of strings resulting from a substring search"""
+    pattern = re.compile(r'.*'+myStr+'.*', re.IGNORECASE)
+    results = []
+    for l in myList:
+        r = re.search(pattern,l)
+        if r is not None:
+            results.append(r.group())
+    return results
+
+def searchListDict(myStr, myListDict, key):
+    """Returns the set of dictionaries resulting from a substring search over specific key"""
+    pattern = re.compile(r'.*'+myStr+'.*', re.IGNORECASE)
+    results = []
+    for d in myListDict:
+        r = re.search(pattern,d[key])
+        if r is not None:
+            results.append(d)
+    return results
+
+def makeListStr(myList):
+    myStr = ''
+    for i in range(1,len(myList)+1):
+        myStr = myStr + ' ' + str(i) + ") " + myList[i-1] + ','
+    return myStr[1:-1]
+
+def affirmative(ans):
+    return any([ans.lower() == x for x in affirmativeAns])
+
+def phPesos(value):
+    """Formats a numerical value into a string with thousand separators ','"""
+    return 'P'+'{:,.2f}'.format(value)

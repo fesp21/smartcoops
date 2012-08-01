@@ -22,16 +22,13 @@ def cashVoucher(entry):
     """
 
     params = getParams(entry)
-    #params[0] is smsCommand
-    farmerName = params[1]
-    description = params[2]
-    amount = params[3]
-    #print "CASHVOUCHER. farmerName:%s. description:%s. amount:%s." % (farmerName, description, amount)
     try:
+        smsCommand = params[0]
+        cvType = params[1] #either 'loan' or 'supplies'
+        receiver = params[2] #who received the cash
         amount = float(params[3])
+        description = params[4]
+        reply "CASHVOUCHER. %s PAID out to:%s. Amount:%s. For:" % (cvType, receiver, phPesos(amount),description)
     except ValueError: 
-        reply = "Could not complete cash voucher, amount entered is not numerical. "
-        reply += "Example of a valid entry would be: "+smsCommand+"/"
-        reply += farmerName+"/"+description+str(450.50)
-        print reply
-
+        reply = "Could not complete CASHVOUCHER."
+    sendSMS(getMobile(entry),reply)
