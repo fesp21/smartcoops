@@ -40,7 +40,7 @@ def charge(entry):
         price = params[4]
         amount = float(numUnits)*float(price)
         reply = "Comfirmed. Charge on loan to %s. Total amount %s. Purchase: %s units of %s." % (farmerName,amount,numUnits,item)
-        print reply #sendSMS(danny,reply)
+        print reply #sms.sendSMS(danny,reply)
     except ValueError: 
         reply = "Could not complete cash voucher, amount entered is not numerical. "
         reply += "Example of a valid entry would be: "+smsCommand+"/"
