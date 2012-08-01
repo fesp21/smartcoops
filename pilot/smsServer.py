@@ -17,12 +17,13 @@ import pyglobe
 danny = '09158668018'
 leah = '09158668019'
 
-try:
-    service = pyglobe.PyGlobe(uname='5txhcoj0x',
-                              pin='21738420',
-                              msisdn=leah)
-    service.sendSMS('Message sent by SMART Coops through Globe!')
-except (pyglobe.PyGlobeInvalidServiceException,
-        pyglobe.PyGlobeInvalidURLException,
-        pyglobe.PyGlobeServerFaultException) as e:
-    print "An error occurred: %s" % e
+def sendSMS(phoneNumber,msg):
+    try:
+        service = pyglobe.PyGlobe(uname='5txhcoj0x',
+                                  pin='21738420',
+                                  msisdn=phoneNumber)
+        service.sendSMS(msg)
+    except (pyglobe.PyGlobeInvalidServiceException,
+            pyglobe.PyGlobeInvalidURLException,
+            pyglobe.PyGlobeServerFaultException) as e:
+        print "An error occurred: %s" % e

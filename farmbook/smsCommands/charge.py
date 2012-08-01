@@ -3,25 +3,36 @@ from farmbook.models import *
 
 def charge(entry):
     """
-    Description:
-    When the coop disburses cash loans to member farmers; also used for when they incur expenses, eg. Xerox Php14.00
+    Description
 
-    Fields:
-    Date
-    Name
-    Description (pre-filled in the voucher with "Amount payable", "Gasoline and oil", etc. but any will do)
-    Amount
-    Explanation (a more detailed description but can be combined with "Description")
+    When farmers borrow in kind from the cooperative; "pautang" of supplies; crop inputs or supplies such as LPG.
 
-    Sample SMS Format:
-    CASHVOUCHER Name/Description/Amount
+    Fields
+
+    Date (of transaction)
+    Sold to (Customer/Farmer)
+    For each product sold
+    Description (Name of product or supply)
+    Quantity (of each product or supply)
+    Unit price (of each product or supply)
+    Amount (Quantity * Unit Price)
+    Total Amount (Sum of Amounts for each product ordered)
+    Sample SMS Format
+
+    CHARGE/Customer/Description/Quantity/Unit Price
 
     Examples:
-    cashvoucher Charlie Santos/loan/20000
-    cashvoucher Onyo Aquino/xerox/14 [in this case, Onyo is the coop officer who used his personal money to buy a xerox and then got reimbursed by the coop]
+
+    charge/charlie santos/24D/2/25
+    ChArGe/ChArLiE SaNTos/viking/3/100
+    charge/charlie santos/viking/3/100/organic fertilizer/2/25
     """
     params = re.split(' */ *',entry['msg'])
     #params[0] is smsCommand
+    #get coop from entry SMS number.
+    #find if item is in the inventory for the coop. If it isn't, still move forward with the transaction but warn the coop that they need to update their inventory because one of the item is now in negative inventory.
+    #add loan amount to farmer's account
+    #send confirmation SMS to farmer
     farmerName = params[1]
     description = params[2]
     amount = params[3]
